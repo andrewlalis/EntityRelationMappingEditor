@@ -21,7 +21,7 @@ public class EditorFrame extends JFrame {
 		model.addRelation(usersRelation);
 		Relation tokensRelation = new Relation(model, new Point(50, 120), "Tokens");
 		tokensRelation.addAttribute(new Attribute(tokensRelation, AttributeType.ID_KEY, "tokenCode"));
-		tokensRelation.addAttribute(new ForeignKeyAttribute(tokensRelation,"username", "Users", "username"));
+		tokensRelation.addAttribute(new ForeignKeyAttribute(tokensRelation, AttributeType.PLAIN, "username", "Users", "username"));
 		tokensRelation.addAttribute(new Attribute(tokensRelation, AttributeType.PLAIN, "expirationDate"));
 		model.addRelation(tokensRelation);
 

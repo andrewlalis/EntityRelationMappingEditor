@@ -11,6 +11,7 @@ import java.text.AttributedString;
 public class RelationViewModel implements ViewModel {
 	public static final int PADDING_X = 5;
 	public static final int PADDING_Y = 5;
+	public static final int ATTRIBUTE_SEPARATION = 10;
 
 	private final Relation relation;
 
@@ -40,13 +41,13 @@ public class RelationViewModel implements ViewModel {
 		int totalAttributeWidth = 0;
 		int maxAttributeHeight = 0;
 		for (Attribute a : this.relation.getAttributes()) {
-			Rectangle attributeBounds = a.getViewModel().getBounds(g);
+			Rectangle attributeBounds = a.getViewModel().getBoxBounds(g);
 			totalAttributeWidth += attributeBounds.width;
 			maxAttributeHeight = Math.max(maxAttributeHeight, attributeBounds.height);
 		}
 		Rectangle nameBounds = this.getNameBounds(g);
 		rect.width = Math.max(totalAttributeWidth, nameBounds.width) + (2 * PADDING_X);
-		rect.height = nameBounds.height + maxAttributeHeight + (2 * PADDING_Y);
+		rect.height = nameBounds.height + maxAttributeHeight + (2 * PADDING_Y) + ATTRIBUTE_SEPARATION;
 		return rect;
 	}
 

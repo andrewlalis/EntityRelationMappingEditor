@@ -65,7 +65,13 @@ public class AddAttributeAction extends AbstractAction {
 				AttributeType.values(),
 				AttributeType.PLAIN
 		);
-		if (type.equals(AttributeType.FOREIGN_KEY)) {
+		boolean shouldUseForeignKey = JOptionPane.showConfirmDialog(
+				c,
+				"Is this attribute a foreign key?",
+				"Foreign Key",
+				JOptionPane.YES_NO_OPTION
+		) == JOptionPane.YES_OPTION;
+		if (shouldUseForeignKey) {
 			if (this.model.getRelations().size() < 2) {
 				JOptionPane.showMessageDialog(c, "There should be at least 2 relations present in the model.", "Not Enough Relations", JOptionPane.WARNING_MESSAGE);
 				return;
@@ -94,7 +100,7 @@ public class AddAttributeAction extends AbstractAction {
 					eligibleAttributes.get(0)
 			);
 			if (fkAttribute != null) {
-				r.addAttribute(new ForeignKeyAttribute(r, name, fkAttribute));
+				r.addAttribute(new ForeignKeyAttribute(r, type, name, fkAttribute), index);
 			}
 		} else {
 			r.addAttribute(new Attribute(r, type, name), index);

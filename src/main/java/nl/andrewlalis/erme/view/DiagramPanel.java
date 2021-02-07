@@ -3,6 +3,7 @@ package nl.andrewlalis.erme.view;
 import lombok.Getter;
 import nl.andrewlalis.erme.control.actions.ExportToImageAction;
 import nl.andrewlalis.erme.control.actions.LoadAction;
+import nl.andrewlalis.erme.control.actions.NewModelAction;
 import nl.andrewlalis.erme.control.actions.SaveAction;
 import nl.andrewlalis.erme.control.actions.edits.AddAttributeAction;
 import nl.andrewlalis.erme.control.actions.edits.AddRelationAction;
@@ -74,6 +75,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 	 * Updates all the action singletons with the latest model information.
 	 */
 	private void updateActionModels() {
+		NewModelAction.getInstance().setDiagramPanel(this);
 		SaveAction.getInstance().setModel(this.model);
 		LoadAction.getInstance().setDiagramPanel(this);
 		ExportToImageAction.getInstance().setModel(this.model);

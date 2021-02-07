@@ -47,8 +47,8 @@ public class RemoveAttributeAction extends AbstractAction {
 		Relation r = selectedRelations.get(0);
 		Attribute attribute = (Attribute) JOptionPane.showInputDialog(
 				(Component) e.getSource(),
-				"Select the index to insert this attribute at.",
-				"Attribute Index",
+				"Select the attribute to remove.",
+				"Select Attribute",
 				JOptionPane.PLAIN_MESSAGE,
 				null,
 				r.getAttributes().toArray(new Attribute[0]),

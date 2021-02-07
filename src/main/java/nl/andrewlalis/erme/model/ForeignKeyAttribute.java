@@ -6,13 +6,13 @@ import lombok.Getter;
 public class ForeignKeyAttribute extends Attribute {
 	private Attribute reference;
 
-	public ForeignKeyAttribute(Relation relation, String name, Attribute reference) {
-		super(relation, AttributeType.FOREIGN_KEY, name);
+	public ForeignKeyAttribute(Relation relation, AttributeType type, String name, Attribute reference) {
+		super(relation, type, name);
 		this.reference = reference;
 	}
 
-	public ForeignKeyAttribute(Relation relation, String name, String referencedRelationName, String referencedAttributeName) {
-		this(relation, name, relation.getModel().findAttribute(referencedRelationName, referencedAttributeName));
+	public ForeignKeyAttribute(Relation relation, AttributeType type, String name, String referencedRelationName, String referencedAttributeName) {
+		this(relation, type, name, relation.getModel().findAttribute(referencedRelationName, referencedAttributeName));
 		if (this.getReference() == null) {
 			throw new IllegalArgumentException("Unknown attribute name.");
 		}
@@ -21,5 +21,14 @@ public class ForeignKeyAttribute extends Attribute {
 	public void setReference(Attribute reference) {
 		this.reference = reference;
 		this.getRelation().getModel().fireChangedEvent();
+	}
+
+	public String getFullReferenceName() {
+		return this.getReference().getRelation().getName() + "." + this.getReference().getName();
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "->" + this.getFullReferenceName();
 	}
 }

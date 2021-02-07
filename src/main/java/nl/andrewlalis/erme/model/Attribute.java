@@ -46,6 +46,7 @@ public class Attribute implements Serializable {
 		if (o == null || getClass() != o.getClass()) return false;
 		Attribute attribute = (Attribute) o;
 		return type == attribute.type &&
+				relation.equals(attribute.getRelation()) &&
 				name.equals(attribute.name);
 	}
 
@@ -56,6 +57,6 @@ public class Attribute implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.getName() + ":" + this.getType().name();
+		return this.getName();
 	}
 }

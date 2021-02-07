@@ -54,6 +54,7 @@ public class Relation implements Serializable {
 
 	public void removeAttribute(Attribute attribute) {
 		if (this.attributes.remove(attribute)) {
+			this.model.removeAllReferencingAttributes(attribute);
 			this.model.fireChangedEvent();
 		}
 	}
@@ -82,5 +83,10 @@ public class Relation implements Serializable {
 	@Override
 	public int hashCode() {
 		return this.getName().hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return this.getName();
 	}
 }

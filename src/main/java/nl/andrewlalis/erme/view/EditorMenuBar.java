@@ -15,12 +15,15 @@ public class EditorMenuBar extends JMenuBar {
 	public EditorMenuBar() {
 		this.add(this.buildFileMenu());
 		this.add(this.buildEditMenu());
+		this.add(this.buildHelpMenu());
 	}
 
 	private JMenu buildFileMenu() {
 		JMenu menu = new JMenu("File");
+		menu.add(NewModelAction.getInstance());
 		menu.add(SaveAction.getInstance());
 		menu.add(LoadAction.getInstance());
+		menu.addSeparator();
 		menu.add(ExportToImageAction.getInstance());
 		menu.addSeparator();
 		menu.add(ExitAction.getInstance());
@@ -36,6 +39,12 @@ public class EditorMenuBar extends JMenuBar {
 		menu.addSeparator();
 		menu.add(UndoAction.getInstance());
 		menu.add(RedoAction.getInstance());
+		return menu;
+	}
+
+	private JMenu buildHelpMenu() {
+		JMenu menu = new JMenu("Help");
+		menu.add("About");
 		return menu;
 	}
 }

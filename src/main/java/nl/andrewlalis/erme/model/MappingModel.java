@@ -52,6 +52,21 @@ public class MappingModel implements Serializable {
 		return null;
 	}
 
+	public void removeAllReferencingAttributes(Attribute referenced) {
+		for (Relation r : this.getRelations()) {
+			Set<Attribute> removalSet = new HashSet<>();
+			for (Attribute a : r.getAttributes()) {
+				if (a instanceof ForeignKeyAttribute) {
+					ForeignKeyAttribute fkA = (ForeignKeyAttribute) a;
+					if (fkA.getReference().equals(referenced)) {
+						removalSet.add(fkA);
+					}
+				}
+			}
+			removalSet.forEach(r::removeAttribute);
+		}
+	}
+
 	public void addChangeListener(ModelChangeListener listener) {
 		if (this.changeListeners == null) {
 			this.changeListeners = new HashSet<>();

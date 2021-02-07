@@ -16,7 +16,6 @@ public class DiagramPopupMenu extends JPopupMenu {
 		List<Relation> selectedRelations = model.getSelectedRelations();
 		if (selectedRelations.size() == 0) {
 			this.add(AddRelationAction.getInstance());
-			this.add(ExportToImageAction.getInstance());
 		}
 		if (selectedRelations.size() > 0) {
 			this.add(RemoveRelationAction.getInstance());
