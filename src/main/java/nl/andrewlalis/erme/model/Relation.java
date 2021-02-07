@@ -20,14 +20,13 @@ public class Relation implements Serializable {
 	private final List<Attribute> attributes;
 
 	private transient boolean selected;
-	private final transient RelationViewModel viewModel;
+	private transient RelationViewModel viewModel;
 
 	public Relation(MappingModel model, Point position, String name) {
 		this.model = model;
 		this.position = position;
 		this.name = name;
 		this.attributes = new ArrayList<>();
-		this.viewModel = new RelationViewModel(this);
 	}
 
 	public void setPosition(Point position) {
@@ -47,10 +46,22 @@ public class Relation implements Serializable {
 		this.model.fireChangedEvent();
 	}
 
+	public void addAttribute(Attribute attribute, int index) {
+		this.attributes.add(index, attribute);
+		this.model.fireChangedEvent();
+	}
+
 	public void removeAttribute(Attribute attribute) {
 		if (this.attributes.remove(attribute)) {
 			this.model.fireChangedEvent();
 		}
+	}
+
+	public RelationViewModel getViewModel() {
+		if (this.viewModel == null) {
+			this.viewModel = new RelationViewModel(this);
+		}
+		return this.viewModel;
 	}
 
 	@Override

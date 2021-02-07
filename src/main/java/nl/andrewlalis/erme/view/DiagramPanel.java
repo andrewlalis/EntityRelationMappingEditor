@@ -1,7 +1,13 @@
 package nl.andrewlalis.erme.view;
 
 import lombok.Getter;
+import nl.andrewlalis.erme.control.actions.ExportToImageAction;
+import nl.andrewlalis.erme.control.actions.LoadAction;
 import nl.andrewlalis.erme.control.actions.SaveAction;
+import nl.andrewlalis.erme.control.actions.edits.AddAttributeAction;
+import nl.andrewlalis.erme.control.actions.edits.AddRelationAction;
+import nl.andrewlalis.erme.control.actions.edits.RemoveAttributeAction;
+import nl.andrewlalis.erme.control.actions.edits.RemoveRelationAction;
 import nl.andrewlalis.erme.control.diagram.DiagramMouseListener;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.ModelChangeListener;
@@ -36,7 +42,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		DiagramMouseListener listener = new DiagramMouseListener(newModel);
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
-		SaveAction.getInstance().setModel(newModel);
+		this.updateActionModels();
 		this.repaint();
 	}
 
@@ -62,5 +68,18 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 	public void onModelChanged() {
 		this.revalidate();
 		this.repaint();
+	}
+
+	/**
+	 * Updates all the action singletons with the latest model information.
+	 */
+	private void updateActionModels() {
+		SaveAction.getInstance().setModel(this.model);
+		LoadAction.getInstance().setDiagramPanel(this);
+		ExportToImageAction.getInstance().setModel(this.model);
+		AddRelationAction.getInstance().setModel(this.model);
+		RemoveRelationAction.getInstance().setModel(this.model);
+		AddAttributeAction.getInstance().setModel(this.model);
+		RemoveAttributeAction.getInstance().setModel(this.model);
 	}
 }

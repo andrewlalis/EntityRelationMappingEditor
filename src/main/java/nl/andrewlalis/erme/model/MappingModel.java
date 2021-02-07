@@ -4,8 +4,10 @@ import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This model contains all the information about a single mapping diagram,
@@ -15,7 +17,7 @@ public class MappingModel implements Serializable {
 	@Getter
 	private final Set<Relation> relations;
 
-	private transient final Set<ModelChangeListener> changeListeners;
+	private transient Set<ModelChangeListener> changeListeners;
 
 	public MappingModel() {
 		this.relations = new HashSet<>();
@@ -34,7 +36,14 @@ public class MappingModel implements Serializable {
 		}
 	}
 
+	public List<Relation> getSelectedRelations() {
+		return this.relations.stream().filter(Relation::isSelected).collect(Collectors.toList());
+	}
+
 	public void addChangeListener(ModelChangeListener listener) {
+		if (this.changeListeners == null) {
+			this.changeListeners = new HashSet<>();
+		}
 		this.changeListeners.add(listener);
 		listener.onModelChanged();
 	}

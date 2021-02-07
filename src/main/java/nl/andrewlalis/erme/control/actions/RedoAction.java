@@ -19,6 +19,7 @@ public class RedoAction extends AbstractAction {
 		super("Redo");
 		this.putValue(Action.SHORT_DESCRIPTION, "Redoes a previously undone action.");
 		this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
+		this.setEnabled(false);
 	}
 
 	@Override

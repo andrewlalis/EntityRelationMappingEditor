@@ -1,6 +1,10 @@
 package nl.andrewlalis.erme.view;
 
 import nl.andrewlalis.erme.control.actions.*;
+import nl.andrewlalis.erme.control.actions.edits.AddAttributeAction;
+import nl.andrewlalis.erme.control.actions.edits.AddRelationAction;
+import nl.andrewlalis.erme.control.actions.edits.RemoveAttributeAction;
+import nl.andrewlalis.erme.control.actions.edits.RemoveRelationAction;
 
 import javax.swing.*;
 
@@ -15,21 +19,23 @@ public class EditorMenuBar extends JMenuBar {
 
 	private JMenu buildFileMenu() {
 		JMenu menu = new JMenu("File");
-		JMenuItem saveItem = new JMenuItem(SaveAction.getInstance());
-		menu.add(saveItem);
-		JMenuItem exportAsImageItem = new JMenuItem(ExportToImageAction.getInstance());
-		menu.add(exportAsImageItem);
-		JMenuItem exitItem = new JMenuItem(ExitAction.getInstance());
-		menu.add(exitItem);
+		menu.add(SaveAction.getInstance());
+		menu.add(LoadAction.getInstance());
+		menu.add(ExportToImageAction.getInstance());
+		menu.addSeparator();
+		menu.add(ExitAction.getInstance());
 		return menu;
 	}
 
 	private JMenu buildEditMenu() {
 		JMenu menu = new JMenu("Edit");
-		JMenuItem undoItem = new JMenuItem(UndoAction.getInstance());
-		menu.add(undoItem);
-		JMenuItem redoItem = new JMenuItem(RedoAction.getInstance());
-		menu.add(redoItem);
+		menu.add(AddRelationAction.getInstance());
+		menu.add(RemoveRelationAction.getInstance());
+		menu.add(AddAttributeAction.getInstance());
+		menu.add(RemoveAttributeAction.getInstance());
+		menu.addSeparator();
+		menu.add(UndoAction.getInstance());
+		menu.add(RedoAction.getInstance());
 		return menu;
 	}
 }

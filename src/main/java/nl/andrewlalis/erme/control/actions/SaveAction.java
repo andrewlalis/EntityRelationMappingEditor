@@ -40,6 +40,9 @@ public class SaveAction extends AbstractAction {
 				"erme"
 		);
 		fileChooser.setFileFilter(filter);
+		if (this.lastSelectedFile != null) {
+			fileChooser.setSelectedFile(this.lastSelectedFile);
+		}
 		int choice = fileChooser.showSaveDialog((Component) e.getSource());
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File chosenFile = fileChooser.getSelectedFile();
@@ -56,6 +59,7 @@ public class SaveAction extends AbstractAction {
 				this.lastSelectedFile = chosenFile;
 				JOptionPane.showMessageDialog(fileChooser, "File saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 			} catch (IOException ex) {
+				ex.printStackTrace();
 				JOptionPane.showMessageDialog(fileChooser, "An error occurred and the file could not be saved:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}

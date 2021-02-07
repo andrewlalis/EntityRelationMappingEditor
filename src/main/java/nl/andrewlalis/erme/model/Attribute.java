@@ -43,4 +43,9 @@ public class Attribute implements Serializable {
 	public int hashCode() {
 		return Objects.hash(type, name);
 	}
+
+	@Override
+	public String toString() {
+		return this.getName() + ":" + this.getType().name();
+	}
 }

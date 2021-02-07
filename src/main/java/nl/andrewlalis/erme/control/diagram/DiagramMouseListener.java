@@ -3,6 +3,7 @@ package nl.andrewlalis.erme.control.diagram;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
+import nl.andrewlalis.erme.view.DiagramPopupMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,6 +25,8 @@ public class DiagramMouseListener extends MouseAdapter {
 	 * relations, if CTRL is not held down.
 	 * - If the click occurs within at least one relation, select the first one,
 	 * and deselect all others if CTRL is not held down.
+	 * - If the user did a right-click, try to open a popup menu with some
+	 * possible actions.
 	 * @param e The mouse event.
 	 */
 	@Override
@@ -43,6 +46,12 @@ public class DiagramMouseListener extends MouseAdapter {
 				break;
 			}
 		}
+
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			DiagramPopupMenu popupMenu = new DiagramPopupMenu(this.model);
+			popupMenu.show(panel, e.getX(), e.getY());
+		}
+
 		this.model.fireChangedEvent();
 	}
 
