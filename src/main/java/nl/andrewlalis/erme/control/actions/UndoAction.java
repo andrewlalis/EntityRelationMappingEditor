@@ -16,7 +16,7 @@ public class UndoAction extends AbstractAction {
 	}
 
 	public UndoAction() {
-		super("Undo");
+		super("Undo (WIP)");
 		this.putValue(Action.SHORT_DESCRIPTION, "Undo the last action.");
 		this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));
 		this.setEnabled(false);

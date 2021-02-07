@@ -4,6 +4,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import nl.andrewlalis.erme.view.EditorFrame;
 
 public class EntityRelationMappingEditor {
+	public static final String VERSION = "1.0.0";
 
 	public static void main(String[] args) {
 		if (!FlatLightLaf.install()) {

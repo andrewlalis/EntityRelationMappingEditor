@@ -42,6 +42,15 @@ public class ExportToImageAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (this.model.getRelations().isEmpty()) {
+			JOptionPane.showMessageDialog(
+					(Component) e.getSource(),
+					"Model is empty. Add some relations before exporting to an image.",
+					"Model Empty",
+					JOptionPane.WARNING_MESSAGE
+			);
+			return;
+		}
 		JFileChooser fileChooser = new JFileChooser(this.lastSelectedFile);
 		fileChooser.setFileFilter(new FileNameExtensionFilter(
 				"Image files", ImageIO.getReaderFileSuffixes()
