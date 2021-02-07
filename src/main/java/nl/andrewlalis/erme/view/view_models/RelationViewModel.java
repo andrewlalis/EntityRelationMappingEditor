@@ -29,10 +29,8 @@ public class RelationViewModel implements ViewModel {
 		}
 		if (this.relation.isSelected()) {
 			g.setColor(Color.BLUE);
-		} else {
-			g.setColor(Color.CYAN);
+			g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 		}
-		g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 
 	public Rectangle getBounds(Graphics2D g) {

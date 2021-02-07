@@ -4,6 +4,7 @@ import lombok.Getter;
 import nl.andrewlalis.erme.view.view_models.RelationViewModel;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * Represents a single "relation" or table in the diagram.
  */
 @Getter
-public class Relation {
+public class Relation implements Serializable {
 	private final MappingModel model;
 	private Point position;
 	private String name;
@@ -30,24 +31,15 @@ public class Relation {
 	}
 
 	public void setPosition(Point position) {
-		if (!this.position.equals(position)) {
-			this.position = position;
-			this.model.fireChangedEvent();
-		}
+		this.position = position;
 	}
 
 	public void setName(String name) {
-		if (!this.name.equals(name)) {
-			this.name = name;
-			this.model.fireChangedEvent();
-		}
+		this.name = name;
 	}
 
 	public void setSelected(boolean selected) {
-		if (selected != this.selected) {
-			this.selected = selected;
-			this.model.fireChangedEvent();
-		}
+		this.selected = selected;
 	}
 
 	public void addAttribute(Attribute attribute) {

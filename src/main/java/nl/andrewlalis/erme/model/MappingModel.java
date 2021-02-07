@@ -2,6 +2,7 @@ package nl.andrewlalis.erme.model;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -10,11 +11,11 @@ import java.util.Set;
  * This model contains all the information about a single mapping diagram,
  * including each mapped table and the links between them.
  */
-public class MappingModel {
+public class MappingModel implements Serializable {
 	@Getter
 	private final Set<Relation> relations;
 
-	private final Set<ModelChangeListener> changeListeners;
+	private transient final Set<ModelChangeListener> changeListeners;
 
 	public MappingModel() {
 		this.relations = new HashSet<>();
@@ -38,7 +39,7 @@ public class MappingModel {
 		listener.onModelChanged();
 	}
 
-	protected final void fireChangedEvent() {
+	public final void fireChangedEvent() {
 		this.changeListeners.forEach(ModelChangeListener::onModelChanged);
 	}
 

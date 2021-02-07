@@ -2,13 +2,14 @@ package nl.andrewlalis.erme.model;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A single value that belongs to a relation.
  */
 @Getter
-public class Attribute {
+public class Attribute implements Serializable {
 	private final Relation relation;
 	private AttributeType type;
 	private String name;

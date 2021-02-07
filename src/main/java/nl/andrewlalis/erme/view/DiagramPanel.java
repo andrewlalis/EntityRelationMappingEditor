@@ -1,6 +1,7 @@
 package nl.andrewlalis.erme.view;
 
 import lombok.Getter;
+import nl.andrewlalis.erme.control.actions.SaveAction;
 import nl.andrewlalis.erme.control.diagram.DiagramMouseListener;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.ModelChangeListener;
@@ -35,6 +36,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		DiagramMouseListener listener = new DiagramMouseListener(newModel);
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
+		SaveAction.getInstance().setModel(newModel);
 		this.repaint();
 	}
 

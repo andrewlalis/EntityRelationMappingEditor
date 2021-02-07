@@ -1,9 +1,6 @@
 package nl.andrewlalis.erme.view;
 
-import nl.andrewlalis.erme.control.actions.ExitAction;
-import nl.andrewlalis.erme.control.actions.ExportToImageAction;
-import nl.andrewlalis.erme.control.actions.RedoAction;
-import nl.andrewlalis.erme.control.actions.UndoAction;
+import nl.andrewlalis.erme.control.actions.*;
 
 import javax.swing.*;
 
@@ -18,6 +15,8 @@ public class EditorMenuBar extends JMenuBar {
 
 	private JMenu buildFileMenu() {
 		JMenu menu = new JMenu("File");
+		JMenuItem saveItem = new JMenuItem(SaveAction.getInstance());
+		menu.add(saveItem);
 		JMenuItem exportAsImageItem = new JMenuItem(ExportToImageAction.getInstance());
 		menu.add(exportAsImageItem);
 		JMenuItem exitItem = new JMenuItem(ExitAction.getInstance());
