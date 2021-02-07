@@ -1,10 +1,7 @@
 package nl.andrewlalis.erme.control.actions.edits;
 
 import lombok.Setter;
-import nl.andrewlalis.erme.model.Attribute;
-import nl.andrewlalis.erme.model.AttributeType;
-import nl.andrewlalis.erme.model.MappingModel;
-import nl.andrewlalis.erme.model.Relation;
+import nl.andrewlalis.erme.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,6 +46,7 @@ public class AddAttributeAction extends AbstractAction {
 		Relation r = selectedRelations.get(0);
 		Component c = (Component) e.getSource();
 		String name = JOptionPane.showInputDialog(c, "Enter the name of the attribute.", "Attribute Name", JOptionPane.PLAIN_MESSAGE);
+		if (name == null) return;
 		Integer index = (Integer) JOptionPane.showInputDialog(
 				c,
 				"Select the index to insert this attribute at.",
@@ -67,7 +65,38 @@ public class AddAttributeAction extends AbstractAction {
 				AttributeType.values(),
 				AttributeType.PLAIN
 		);
-		if (name != null && index != null && type != null) {
+		if (type.equals(AttributeType.FOREIGN_KEY)) {
+			if (this.model.getRelations().size() < 2) {
+				JOptionPane.showMessageDialog(c, "There should be at least 2 relations present in the model.", "Not Enough Relations", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			Relation fkRelation = (Relation) JOptionPane.showInputDialog(
+					c,
+					"Select the relation that this foreign key references.",
+					"Foreign Key Relation Reference",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					this.model.getRelations().toArray(new Relation[0]),
+					this.model.getRelations().stream().findFirst().orElse(null)
+			);
+			List<Attribute> eligibleAttributes = fkRelation.getReferencableAttributes();
+			if (eligibleAttributes.isEmpty()) {
+				JOptionPane.showMessageDialog(c, "There are no referencable attributes in the selected relation.", "No Referencable Attributes", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			Attribute fkAttribute = (Attribute) JOptionPane.showInputDialog(
+					c,
+					"Select the attribute that this foreign key references.",
+					"Foreign Key Attribute Reference",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					eligibleAttributes.toArray(new Attribute[0]),
+					eligibleAttributes.get(0)
+			);
+			if (fkAttribute != null) {
+				r.addAttribute(new ForeignKeyAttribute(r, name, fkAttribute));
+			}
+		} else {
 			r.addAttribute(new Attribute(r, type, name), index);
 		}
 	}

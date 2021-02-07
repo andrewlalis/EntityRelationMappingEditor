@@ -1,6 +1,7 @@
 package nl.andrewlalis.erme.model;
 
 import lombok.Getter;
+import nl.andrewlalis.erme.view.view_models.AttributeViewModel;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,6 +14,8 @@ public class Attribute implements Serializable {
 	private final Relation relation;
 	private AttributeType type;
 	private String name;
+
+	private AttributeViewModel viewModel;
 
 	public Attribute(Relation relation, AttributeType type, String name) {
 		this.relation = relation;
@@ -28,6 +31,13 @@ public class Attribute implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 		this.relation.getModel().fireChangedEvent();
+	}
+
+	public AttributeViewModel getViewModel() {
+		if (this.viewModel == null) {
+			this.viewModel = new AttributeViewModel(this);
+		}
+		return this.viewModel;
 	}
 
 	@Override

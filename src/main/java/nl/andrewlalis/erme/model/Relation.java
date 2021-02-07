@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Represents a single "relation" or table in the diagram.
@@ -62,6 +63,12 @@ public class Relation implements Serializable {
 			this.viewModel = new RelationViewModel(this);
 		}
 		return this.viewModel;
+	}
+
+	public List<Attribute> getReferencableAttributes() {
+		return this.attributes.stream()
+				.filter(a -> a.getType() == AttributeType.ID_KEY || a.getType() == AttributeType.PARTIAL_ID_KEY)
+				.collect(Collectors.toList());
 	}
 
 	@Override

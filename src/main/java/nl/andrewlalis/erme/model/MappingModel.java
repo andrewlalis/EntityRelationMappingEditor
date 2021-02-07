@@ -40,6 +40,18 @@ public class MappingModel implements Serializable {
 		return this.relations.stream().filter(Relation::isSelected).collect(Collectors.toList());
 	}
 
+	public Attribute findAttribute(String relationName, String attributeName) {
+		for (Relation r : this.getRelations()) {
+			if (!r.getName().equals(relationName)) continue;
+			for (Attribute a : r.getAttributes()) {
+				if (a.getName().equals(attributeName)) {
+					return a;
+				}
+			}
+		}
+		return null;
+	}
+
 	public void addChangeListener(ModelChangeListener listener) {
 		if (this.changeListeners == null) {
 			this.changeListeners = new HashSet<>();

@@ -1,9 +1,6 @@
 package nl.andrewlalis.erme.view;
 
-import nl.andrewlalis.erme.model.Attribute;
-import nl.andrewlalis.erme.model.AttributeType;
-import nl.andrewlalis.erme.model.MappingModel;
-import nl.andrewlalis.erme.model.Relation;
+import nl.andrewlalis.erme.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +21,7 @@ public class EditorFrame extends JFrame {
 		model.addRelation(usersRelation);
 		Relation tokensRelation = new Relation(model, new Point(50, 120), "Tokens");
 		tokensRelation.addAttribute(new Attribute(tokensRelation, AttributeType.ID_KEY, "tokenCode"));
-		tokensRelation.addAttribute(new Attribute(tokensRelation, AttributeType.FOREIGN_KEY, "username"));
+		tokensRelation.addAttribute(new ForeignKeyAttribute(tokensRelation,"username", "Users", "username"));
 		tokensRelation.addAttribute(new Attribute(tokensRelation, AttributeType.PLAIN, "expirationDate"));
 		model.addRelation(tokensRelation);
 

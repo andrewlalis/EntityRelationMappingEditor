@@ -25,7 +25,7 @@ public class RelationViewModel implements ViewModel {
 		g.setColor(Color.BLACK);
 		g.drawString(as.getIterator(), bounds.x + PADDING_X, bounds.y + this.getNameBounds(g).height - PADDING_Y);
 		for (Attribute a : this.relation.getAttributes()) {
-			new AttributeViewModel(a).draw(g);
+			a.getViewModel().draw(g);
 		}
 		if (this.relation.isSelected()) {
 			g.setColor(Color.BLUE);
@@ -40,7 +40,7 @@ public class RelationViewModel implements ViewModel {
 		int totalAttributeWidth = 0;
 		int maxAttributeHeight = 0;
 		for (Attribute a : this.relation.getAttributes()) {
-			Rectangle attributeBounds = new AttributeViewModel(a).getBounds(g);
+			Rectangle attributeBounds = a.getViewModel().getBounds(g);
 			totalAttributeWidth += attributeBounds.width;
 			maxAttributeHeight = Math.max(maxAttributeHeight, attributeBounds.height);
 		}
