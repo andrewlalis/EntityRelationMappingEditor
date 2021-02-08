@@ -15,7 +15,7 @@ public class Attribute implements Serializable {
 	private AttributeType type;
 	private String name;
 
-	private AttributeViewModel viewModel;
+	private transient AttributeViewModel viewModel;
 
 	public Attribute(Relation relation, AttributeType type, String name) {
 		this.relation = relation;

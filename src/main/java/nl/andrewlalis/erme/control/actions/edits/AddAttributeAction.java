@@ -56,6 +56,7 @@ public class AddAttributeAction extends AbstractAction {
 				Stream.iterate(0, n -> n + 1).limit(r.getAttributes().size() + 1).toArray(),
 				r.getAttributes().size()
 		);
+		if (index == null) return;
 		AttributeType type = (AttributeType) JOptionPane.showInputDialog(
 				c,
 				"Select the type this attribute is.",
@@ -65,12 +66,16 @@ public class AddAttributeAction extends AbstractAction {
 				AttributeType.values(),
 				AttributeType.PLAIN
 		);
-		boolean shouldUseForeignKey = JOptionPane.showConfirmDialog(
+		if (type == null) return;
+		boolean shouldUseForeignKey = ((String) JOptionPane.showInputDialog(
 				c,
 				"Is this attribute a foreign key?",
 				"Foreign Key",
-				JOptionPane.YES_NO_OPTION
-		) == JOptionPane.YES_OPTION;
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				new String[]{"Yes", "No"},
+				"No"
+		)).equalsIgnoreCase("yes");
 		if (shouldUseForeignKey) {
 			if (this.model.getRelations().size() < 2) {
 				JOptionPane.showMessageDialog(c, "There should be at least 2 relations present in the model.", "Not Enough Relations", JOptionPane.WARNING_MESSAGE);
@@ -85,7 +90,8 @@ public class AddAttributeAction extends AbstractAction {
 					this.model.getRelations().toArray(new Relation[0]),
 					this.model.getRelations().stream().findFirst().orElse(null)
 			);
-			List<Attribute> eligibleAttributes = fkRelation.getReferencableAttributes();
+			if (fkRelation == null) return;
+			List<Attribute> eligibleAttributes = fkRelation.getAttributes();
 			if (eligibleAttributes.isEmpty()) {
 				JOptionPane.showMessageDialog(c, "There are no referencable attributes in the selected relation.", "No Referencable Attributes", JOptionPane.WARNING_MESSAGE);
 				return;
