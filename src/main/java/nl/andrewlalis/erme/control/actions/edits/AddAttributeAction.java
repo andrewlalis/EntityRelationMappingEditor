@@ -44,6 +44,7 @@ public class AddAttributeAction extends AbstractAction {
 			return;
 		}
 		Relation r = selectedRelations.get(0);
+		Attribute createdAttribute;
 		Component c = (Component) e.getSource();
 		String name = JOptionPane.showInputDialog(c, "Enter the name of the attribute.", "Attribute Name", JOptionPane.PLAIN_MESSAGE);
 		if (name == null) return;
@@ -105,11 +106,11 @@ public class AddAttributeAction extends AbstractAction {
 					eligibleAttributes.toArray(new Attribute[0]),
 					eligibleAttributes.get(0)
 			);
-			if (fkAttribute != null) {
-				r.addAttribute(new ForeignKeyAttribute(r, type, name, fkAttribute), index);
-			}
+			if (fkAttribute == null) return;
+			createdAttribute = new ForeignKeyAttribute(r, type, name, fkAttribute);
 		} else {
-			r.addAttribute(new Attribute(r, type, name), index);
+			createdAttribute = new Attribute(r, type, name);
 		}
+		r.addAttribute(createdAttribute, index);
 	}
 }
