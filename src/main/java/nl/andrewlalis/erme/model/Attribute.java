@@ -59,4 +59,8 @@ public class Attribute implements Serializable {
 	public String toString() {
 		return this.getName();
 	}
+
+	public Attribute copy(Relation newRelation) {
+		return new Attribute(newRelation, this.getType(), this.getName());
+	}
 }

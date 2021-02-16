@@ -2,6 +2,7 @@ package nl.andrewlalis.erme.model;
 
 import lombok.Getter;
 import nl.andrewlalis.erme.view.view_models.RelationViewModel;
+import nl.andrewlalis.erme.view.view_models.ViewModel;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * Represents a single "relation" or table in the diagram.
  */
 @Getter
-public class Relation implements Serializable {
+public class Relation implements Serializable, Viewable {
 	private final MappingModel model;
 	private Point position;
 	private String name;
@@ -59,7 +60,8 @@ public class Relation implements Serializable {
 		}
 	}
 
-	public RelationViewModel getViewModel() {
+	@Override
+	public ViewModel getViewModel() {
 		if (this.viewModel == null) {
 			this.viewModel = new RelationViewModel(this);
 		}
@@ -88,5 +90,11 @@ public class Relation implements Serializable {
 	@Override
 	public String toString() {
 		return this.getName();
+	}
+
+	public Relation copy(MappingModel newModel) {
+		Relation c = new Relation(newModel, new Point(this.getPosition()), this.getName());
+		this.getAttributes().forEach(a -> c.addAttribute(a.copy(c)));
+		return c;
 	}
 }

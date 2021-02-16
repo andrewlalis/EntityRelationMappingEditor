@@ -7,7 +7,6 @@ import nl.andrewlalis.erme.view.DiagramPopupMenu;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -31,22 +30,29 @@ public class DiagramMouseListener extends MouseAdapter {
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
-		DiagramPanel panel = (DiagramPanel) e.getSource();
-		final Graphics2D g2d = panel.getGraphics2D();
+		final DiagramPanel panel = (DiagramPanel) e.getSource();
+		final Graphics2D g = panel.getGraphics2D();
 		this.mouseDragStart = e.getPoint();
+		final int modelX = e.getX() - panel.getPanningTranslation().x;
+		final int modelY = e.getY() - panel.getPanningTranslation().y;
 
-		boolean isCtrlDown = (e.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK;
+		final boolean isCtrlDown = (e.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK;
+		final boolean isShiftDown = (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK;
 
-		if (!isCtrlDown) {
+		if (!isShiftDown && !isCtrlDown) {// A simple click anywhere should reset selection.
 			this.model.getRelations().forEach(r -> r.setSelected(false));
 		}
-		for (Relation r : this.model.getRelations()) {
-			if (r.getViewModel().getBounds(g2d).contains(e.getX(), e.getY())) {
-				r.setSelected(!r.isSelected());
-				break;
+
+		if (!isShiftDown) {// If the user clicked or CTRL+clicked, try and select the relation they clicked on.
+			for (Relation r : this.model.getRelations()) {
+				if (r.getViewModel().getBounds(g).contains(modelX, modelY)) {
+					r.setSelected(!r.isSelected());
+					break;
+				}
 			}
 		}
 
+		// If the user right-clicked, show a popup menu.
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			DiagramPopupMenu popupMenu = new DiagramPopupMenu(this.model);
 			popupMenu.show(panel, e.getX(), e.getY());
@@ -62,15 +68,24 @@ public class DiagramMouseListener extends MouseAdapter {
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		int dx = this.mouseDragStart.x - e.getX();
-		int dy = this.mouseDragStart.y - e.getY();
+		final int dx = this.mouseDragStart.x - e.getX();
+		final int dy = this.mouseDragStart.y - e.getY();
+		final boolean isShiftDown = (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK;
 		boolean changed = false;
-		for (Relation r : this.model.getRelations()) {
-			if (r.isSelected()) {
-				r.setPosition(new Point(r.getPosition().x - dx, r.getPosition().y - dy));
-				changed = true;
+
+		if (isShiftDown) {
+			final DiagramPanel panel = (DiagramPanel) e.getSource();
+			panel.translate(-dx, -dy);
+			panel.repaint();
+		} else {
+			for (Relation r : this.model.getRelations()) {
+				if (r.isSelected()) {
+					r.setPosition(new Point(r.getPosition().x - dx, r.getPosition().y - dy));
+					changed = true;
+				}
 			}
 		}
+
 		if (changed) {
 			this.model.fireChangedEvent();
 		}

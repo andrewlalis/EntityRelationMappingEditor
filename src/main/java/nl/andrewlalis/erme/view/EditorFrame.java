@@ -16,7 +16,7 @@ public class EditorFrame extends JFrame {
 		this.setMinimumSize(new Dimension(400, 400));
 		this.setPreferredSize(new Dimension(800, 800));
 		this.pack();
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 	}
 }

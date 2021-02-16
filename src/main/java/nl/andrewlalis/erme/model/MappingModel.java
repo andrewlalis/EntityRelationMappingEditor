@@ -1,7 +1,10 @@
 package nl.andrewlalis.erme.model;
 
 import lombok.Getter;
+import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
+import nl.andrewlalis.erme.view.view_models.ViewModel;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.stream.Collectors;
  * This model contains all the information about a single mapping diagram,
  * including each mapped table and the links between them.
  */
-public class MappingModel implements Serializable {
+public class MappingModel implements Serializable, Viewable {
 	@Getter
 	private final Set<Relation> relations;
 
@@ -79,6 +82,23 @@ public class MappingModel implements Serializable {
 		this.changeListeners.forEach(ModelChangeListener::onModelChanged);
 	}
 
+	/**
+	 * Updates the positions of all relations so that the bounding box for this
+	 * model starts at 0, 0.
+	 */
+	public final void normalizeRelationPositions() {
+		int minX = Integer.MAX_VALUE;
+		int minY = Integer.MAX_VALUE;
+		for (Relation r : this.getRelations()) {
+			minX = Math.min(minX, r.getPosition().x);
+			minY = Math.min(minY, r.getPosition().y);
+		}
+		for (Relation r : this.getRelations()) {
+			final Point current = r.getPosition();
+			r.setPosition(new Point(current.x - minX, current.y - minY));
+		}
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -90,5 +110,16 @@ public class MappingModel implements Serializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.getRelations());
+	}
+
+	@Override
+	public ViewModel getViewModel() {
+		return new MappingModelViewModel(this);
+	}
+
+	public MappingModel copy() {
+		MappingModel c = new MappingModel();
+		this.getRelations().forEach(r -> c.addRelation(r.copy(c)));
+		return c;
 	}
 }

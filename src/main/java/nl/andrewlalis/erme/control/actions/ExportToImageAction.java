@@ -84,23 +84,13 @@ public class ExportToImageAction extends AbstractAction {
 	private BufferedImage renderModel() {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = bufferedImage.createGraphics();
-		int minX = Integer.MAX_VALUE;
-		int minY = Integer.MAX_VALUE;
-		int maxX = Integer.MIN_VALUE;
-		int maxY = Integer.MIN_VALUE;
-		for (Relation r : model.getRelations()) {
-			Rectangle bounds = r.getViewModel().getBounds(g2d);
-			minX = Math.min(minX, bounds.x);
-			minY = Math.min(minY, bounds.y);
-			maxX = Math.max(maxX, bounds.x + bounds.width);
-			maxY = Math.max(maxY, bounds.y + bounds.height);
-		}
-		BufferedImage outputImage = new BufferedImage((maxX - minX), (maxY - minY) + 20, BufferedImage.TYPE_INT_RGB);
+		final Rectangle bounds = this.model.getViewModel().getBounds(g2d);
+		BufferedImage outputImage = new BufferedImage(bounds.width, bounds.height + 20, BufferedImage.TYPE_INT_RGB);
 		g2d = outputImage.createGraphics();
 		g2d.setColor(Color.WHITE);
 		g2d.fillRect(outputImage.getMinX(), outputImage.getMinY(), outputImage.getWidth(), outputImage.getHeight());
 		AffineTransform originalTransform = g2d.getTransform();
-		g2d.setTransform(AffineTransform.getTranslateInstance(-minX, -minY));
+		g2d.setTransform(AffineTransform.getTranslateInstance(-bounds.x, -bounds.y));
 
 		List<Relation> selectedRelations = this.model.getSelectedRelations();
 		this.model.getSelectedRelations().forEach(r -> r.setSelected(false));

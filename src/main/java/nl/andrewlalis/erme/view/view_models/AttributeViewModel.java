@@ -9,6 +9,9 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.Rectangle2D;
 import java.text.AttributedString;
 
+/**
+ * View model for rendering a single attribute of a relation.
+ */
 public class AttributeViewModel implements ViewModel {
 	public static final int PADDING_X = 5;
 	public static final int PADDING_Y = 5;
@@ -25,7 +28,7 @@ public class AttributeViewModel implements ViewModel {
 	@Override
 	public void draw(Graphics2D g) {
 		AttributedString as = this.getAttributedString(g);
-		Rectangle r = this.getBoxBounds(g, as);
+		Rectangle r = this.getBounds(g, as);
 		g.setColor(BACKGROUND_COLOR);
 		g.fillRect(r.x, r.y, r.width, r.height);
 		g.setColor(FONT_COLOR);
@@ -40,12 +43,18 @@ public class AttributeViewModel implements ViewModel {
 		}
 	}
 
-	private Rectangle getBoxBounds(Graphics2D g, AttributedString as) {
+	@Override
+	public Rectangle getBounds(Graphics2D g) {
+		return this.getBounds(g, this.getAttributedString(g));
+	}
+
+	private Rectangle getBounds(Graphics2D g, AttributedString as) {
+		final RelationViewModel relationViewModel = (RelationViewModel) this.attribute.getRelation().getViewModel();
 		int x = this.attribute.getRelation().getPosition().x + RelationViewModel.PADDING_X;
-		int y = this.attribute.getRelation().getPosition().y + this.attribute.getRelation().getViewModel().getNameBounds(g).height + RelationViewModel.ATTRIBUTE_SEPARATION;
+		int y = this.attribute.getRelation().getPosition().y + relationViewModel.getNameBounds(g).height + RelationViewModel.ATTRIBUTE_SEPARATION;
 		int i = 0;
 		while (!this.attribute.getRelation().getAttributes().get(i).equals(this.attribute)) {
-			x += this.attribute.getRelation().getAttributes().get(i).getViewModel().getBoxBounds(g).width;
+			x += this.attribute.getRelation().getAttributes().get(i).getViewModel().getBounds(g).width;
 			i++;
 		}
 		Rectangle2D nameRect = g.getFontMetrics().getStringBounds(as.getIterator(), 0, this.attribute.getName().length(), g);
@@ -60,10 +69,6 @@ public class AttributeViewModel implements ViewModel {
 			width = Math.max(width, referenceNameBounds.width + (2 * PADDING_X));
 		}
 		return new Rectangle(x, y, width, height);
-	}
-
-	public Rectangle getBoxBounds(Graphics2D g) {
-		return this.getBoxBounds(g, this.getAttributedString(g));
 	}
 
 	private AttributedString getAttributedString(Graphics2D g) {

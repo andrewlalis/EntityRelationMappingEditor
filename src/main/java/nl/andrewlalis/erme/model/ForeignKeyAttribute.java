@@ -31,4 +31,9 @@ public class ForeignKeyAttribute extends Attribute {
 	public String toString() {
 		return super.toString() + "->" + this.getFullReferenceName();
 	}
+
+	@Override
+	public ForeignKeyAttribute copy(Relation newRelation) {
+		return new ForeignKeyAttribute(newRelation, this.getType(), this.getName(), this.getReference());
+	}
 }
