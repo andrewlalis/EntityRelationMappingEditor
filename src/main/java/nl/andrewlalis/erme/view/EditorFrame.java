@@ -9,10 +9,10 @@ import java.awt.*;
  * The main JFrame for the editor.
  */
 public class EditorFrame extends JFrame {
-	public EditorFrame() {
+	public EditorFrame(boolean includeAdminActions) {
 		super("ER-Mapping Editor");
 		this.setContentPane(new DiagramPanel(new MappingModel()));
-		this.setJMenuBar(new EditorMenuBar());
+		this.setJMenuBar(new EditorMenuBar(includeAdminActions));
 		this.setMinimumSize(new Dimension(400, 400));
 		this.setPreferredSize(new Dimension(800, 800));
 		this.pack();
