@@ -3,6 +3,7 @@ package nl.andrewlalis.erme.control.actions;
 import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
+import nl.andrewlalis.erme.view.DiagramPanel;
 import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 
 import javax.imageio.ImageIO;
@@ -84,6 +85,7 @@ public class ExportToImageAction extends AbstractAction {
 	private BufferedImage renderModel() {
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = bufferedImage.createGraphics();
+		DiagramPanel.prepareGraphics(g2d);
 		final Rectangle bounds = this.model.getViewModel().getBounds(g2d);
 		BufferedImage outputImage = new BufferedImage(bounds.width, bounds.height + 20, BufferedImage.TYPE_INT_RGB);
 		g2d = outputImage.createGraphics();
@@ -91,6 +93,7 @@ public class ExportToImageAction extends AbstractAction {
 		g2d.fillRect(outputImage.getMinX(), outputImage.getMinY(), outputImage.getWidth(), outputImage.getHeight());
 		AffineTransform originalTransform = g2d.getTransform();
 		g2d.setTransform(AffineTransform.getTranslateInstance(-bounds.x, -bounds.y));
+		DiagramPanel.prepareGraphics(g2d);
 
 		List<Relation> selectedRelations = this.model.getSelectedRelations();
 		this.model.getSelectedRelations().forEach(r -> r.setSelected(false));

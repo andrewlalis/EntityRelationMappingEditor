@@ -39,7 +39,9 @@ public class AddRelationAction extends AbstractAction {
 				JOptionPane.PLAIN_MESSAGE
 		);
 		if (name != null) {
-			this.model.addRelation(new Relation(this.model, new Point(0, 0), name));
+			Rectangle bounds = this.model.getRelationBounds();
+			Point center = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+			this.model.addRelation(new Relation(this.model, center, name));
 		}
 	}
 }
