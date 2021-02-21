@@ -12,7 +12,10 @@ import javax.swing.*;
  * The menu bar that's visible atop the application.
  */
 public class EditorMenuBar extends JMenuBar {
+	private final boolean includeAdminActions;
+
 	public EditorMenuBar(boolean includeAdminActions) {
+		this.includeAdminActions = includeAdminActions;
 		this.add(this.buildFileMenu());
 		this.add(this.buildEditMenu());
 		this.add(this.buildHelpMenu());
@@ -45,6 +48,9 @@ public class EditorMenuBar extends JMenuBar {
 	private JMenu buildHelpMenu() {
 		JMenu menu = new JMenu("Help");
 		menu.add(InstructionsAction.getInstance());
+		if (this.includeAdminActions) {
+			menu.add(MappingAlgorithmHelpAction.getInstance());
+		}
 		menu.add(LoadSampleModelAction.getInstance());
 		menu.add(AboutAction.getInstance());
 		return menu;
