@@ -4,6 +4,7 @@ import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
+import nl.andrewlalis.erme.view.view_models.AttributeViewModel;
 import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 
 import javax.imageio.ImageIO;
@@ -113,10 +114,13 @@ public class ExportToImageAction extends AbstractAction {
 		DiagramPanel.prepareGraphics(g2d);
 
 		// Render the model.
+		boolean lolcat = AttributeViewModel.getLolcatMode(); // save previous lolcat mode
+		AttributeViewModel.setLolcatMode(false);
 		List<Relation> selectedRelations = this.model.getSelectedRelations();
 		this.model.getSelectedRelations().forEach(r -> r.setSelected(false));
 		new MappingModelViewModel(this.model).draw(g2d);
 		this.model.getRelations().forEach(r -> r.setSelected(selectedRelations.contains(r)));
+		AttributeViewModel.setLolcatMode(lolcat); // revert previous lolcat mode
 
 		// Revert back to the normal image space, and render a watermark.
 		g2d.setTransform(originalTransform);

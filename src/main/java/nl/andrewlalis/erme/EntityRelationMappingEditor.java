@@ -7,25 +7,30 @@ import nl.andrewlalis.erme.view.EditorFrame;
 import java.nio.charset.StandardCharsets;
 
 public class EntityRelationMappingEditor {
-	public static final String VERSION = "1.3.1";
+    public static final String VERSION = "1.3.1";
+    private static EditorFrame frame;
 
-	public static void main(String[] args) {
-		if (!FlatLightLaf.install()) {
-			System.err.println("Could not install FlatLight Look and Feel.");
-		}
-		final boolean includeAdminActions = shouldIncludeAdminActions(args);
-		if (includeAdminActions) {
-			System.out.println("Admin actions have been enabled.");
-		}
-		final EditorFrame frame = new EditorFrame(includeAdminActions);
-		frame.setVisible(true);
-	}
+    public static EditorFrame getFrame() {
+        return frame;
+    }
 
-	private static boolean shouldIncludeAdminActions(String[] args) {
-		if (args.length < 1) {
-			return false;
-		}
-		byte[] pw = args[0].getBytes(StandardCharsets.UTF_8);
-		return Hash.matches(pw, "admin_hash.txt");
-	}
+    public static void main(String[] args) {
+        if (!FlatLightLaf.install()) {
+            System.err.println("Could not install FlatLight Look and Feel.");
+        }
+        final boolean includeAdminActions = shouldIncludeAdminActions(args);
+        if (includeAdminActions) {
+            System.out.println("Admin actions have been enabled.");
+        }
+        frame = new EditorFrame(includeAdminActions);
+        frame.setVisible(true);
+    }
+
+    private static boolean shouldIncludeAdminActions(String[] args) {
+        if (args.length < 1) {
+            return false;
+        }
+        byte[] pw = args[0].getBytes(StandardCharsets.UTF_8);
+        return Hash.matches(pw, "admin_hash.txt");
+    }
 }
