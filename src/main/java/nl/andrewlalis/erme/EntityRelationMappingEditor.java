@@ -7,7 +7,7 @@ import nl.andrewlalis.erme.view.EditorFrame;
 import java.nio.charset.StandardCharsets;
 
 public class EntityRelationMappingEditor {
-	public static final String VERSION = "1.3.0";
+	public static final String VERSION = "1.3.1";
 
 	public static void main(String[] args) {
 		if (!FlatLightLaf.install()) {

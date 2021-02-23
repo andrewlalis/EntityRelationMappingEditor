@@ -123,6 +123,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		LoadAction.getInstance().setDiagramPanel(this);
 		ExportToImageAction.getInstance().setModel(this.model);
 		AddRelationAction.getInstance().setModel(this.model);
+		AddRelationAction.getInstance().setDiagramPanel(this);
 		RemoveRelationAction.getInstance().setModel(this.model);
 		AddAttributeAction.getInstance().setModel(this.model);
 		RemoveAttributeAction.getInstance().setModel(this.model);

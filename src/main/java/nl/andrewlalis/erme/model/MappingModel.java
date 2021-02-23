@@ -73,6 +73,9 @@ public class MappingModel implements Serializable, Viewable {
 	}
 
 	public Rectangle getRelationBounds() {
+		if (this.getRelations().isEmpty()) {
+			return new Rectangle(0, 0, 0, 0);
+		}
 		int minX = Integer.MAX_VALUE;
 		int minY = Integer.MAX_VALUE;
 		int maxX = Integer.MIN_VALUE;
@@ -108,6 +111,10 @@ public class MappingModel implements Serializable, Viewable {
 		for (Relation r : this.getRelations()) {
 			minX = Math.min(minX, r.getPosition().x);
 			minY = Math.min(minY, r.getPosition().y);
+		}
+		if (this.getRelations().isEmpty()) {
+			minX = 0;
+			minY = 0;
 		}
 		for (Relation r : this.getRelations()) {
 			final Point current = r.getPosition();

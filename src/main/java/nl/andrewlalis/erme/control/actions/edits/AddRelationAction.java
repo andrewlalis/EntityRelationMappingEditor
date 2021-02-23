@@ -3,6 +3,7 @@ package nl.andrewlalis.erme.control.actions.edits;
 import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
+import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +24,9 @@ public class AddRelationAction extends AbstractAction {
 	@Setter
 	private MappingModel model;
 
+	@Setter
+	private DiagramPanel diagramPanel;
+
 	public AddRelationAction() {
 		super("Add Relation");
 		this.putValue(SHORT_DESCRIPTION, "Add a new relation to the diagram.");
@@ -39,9 +43,23 @@ public class AddRelationAction extends AbstractAction {
 				JOptionPane.PLAIN_MESSAGE
 		);
 		if (name != null) {
-			Rectangle bounds = this.model.getRelationBounds();
-			Point center = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
-			this.model.addRelation(new Relation(this.model, center, name));
+			final boolean isFirstRelation = this.model.getRelations().isEmpty();
+			Point p;
+			if (isFirstRelation) {
+				p = new Point(100, 100);
+			} else {
+				Rectangle bounds = this.model.getRelationBounds();
+				p = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+			}
+			Relation r = new Relation(this.model, p, name);
+			this.model.getSelectedRelations().forEach(rl -> rl.setSelected(false));
+			r.setSelected(true);
+			this.model.addRelation(r);
+			if (isFirstRelation) {
+				this.model.normalizeRelationPositions();
+				this.diagramPanel.centerModel();
+				this.diagramPanel.repaint();
+			}
 		}
 	}
 }
