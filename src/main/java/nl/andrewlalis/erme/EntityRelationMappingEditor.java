@@ -8,11 +8,6 @@ import java.nio.charset.StandardCharsets;
 
 public class EntityRelationMappingEditor {
 	public static final String VERSION = "1.3.1";
-	private static EditorFrame frame;
-
-	public static EditorFrame getFrame() {
-		return frame;
-	}
 
 	public static void main(String[] args) {
 		if (!FlatLightLaf.install()) {
@@ -22,7 +17,7 @@ public class EntityRelationMappingEditor {
 		if (includeAdminActions) {
 			System.out.println("Admin actions have been enabled.");
 		}
-		frame = new EditorFrame(includeAdminActions);
+		EditorFrame frame = new EditorFrame(includeAdminActions);
 		frame.setVisible(true);
 	}
 
