@@ -1,6 +1,7 @@
 package nl.andrewlalis.erme.view.view_models;
 
 import nl.andrewlalis.erme.EntityRelationMappingEditor;
+import nl.andrewlalis.erme.control.actions.LolcatAction;
 import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.AttributeType;
 import nl.andrewlalis.erme.model.ForeignKeyAttribute;
@@ -22,19 +23,10 @@ public class AttributeViewModel implements ViewModel {
 	public static final float FK_FONT_SIZE = 11.0f;
 	private static final float LOLCAT_SAT = 0.75f;
 	private static final float LOLCAT_BRIGHT = 1f;
-	private static boolean lolcatMode;
 	private final Attribute attribute;
 
 	public AttributeViewModel(Attribute attribute) {
 		this.attribute = attribute;
-	}
-
-	public static boolean getLolcatMode() {
-		return lolcatMode;
-	}
-
-	public static void setLolcatMode(boolean lolcatMode) {
-		AttributeViewModel.lolcatMode = lolcatMode;
 	}
 
 	@Override
@@ -56,8 +48,8 @@ public class AttributeViewModel implements ViewModel {
 	}
 
 	private Color getBackgroundColor(int x, int y, Graphics2D g) {
-		if (!lolcatMode) return BACKGROUND_COLOR;
-		Dimension viewportSize = ((DiagramPanel)EntityRelationMappingEditor.getFrame().getContentPane()).getModel().getRelationBounds().getSize();
+		if (!LolcatAction.getInstance().isLolcatEnabled()) return BACKGROUND_COLOR;
+		Dimension viewportSize = g.getClipBounds().getSize();
 
 		double dx = viewportSize.width;
 		double dy = viewportSize.height;
@@ -67,6 +59,7 @@ public class AttributeViewModel implements ViewModel {
 
 		double lambda = (dx * x + dy * y);
 		double diag_val = Math.sqrt(Math.pow(dx * lambda, 2) + Math.pow(dy * lambda, 2)) / mag;
+		System.out.println(diag_val);
 
 		return Color.getHSBColor((float) diag_val, LOLCAT_SAT, LOLCAT_BRIGHT);
 	}

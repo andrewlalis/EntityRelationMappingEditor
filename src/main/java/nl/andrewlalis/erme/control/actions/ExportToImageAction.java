@@ -114,13 +114,13 @@ public class ExportToImageAction extends AbstractAction {
 		DiagramPanel.prepareGraphics(g2d);
 
 		// Render the model.
-		boolean lolcat = AttributeViewModel.getLolcatMode(); // save previous lolcat mode
-		AttributeViewModel.setLolcatMode(false);
+		boolean lolcat = LolcatAction.getInstance().isLolcatEnabled(); // save previous lolcat mode
+		LolcatAction.getInstance().setLolcatEnabled(false);
 		List<Relation> selectedRelations = this.model.getSelectedRelations();
 		this.model.getSelectedRelations().forEach(r -> r.setSelected(false));
 		new MappingModelViewModel(this.model).draw(g2d);
 		this.model.getRelations().forEach(r -> r.setSelected(selectedRelations.contains(r)));
-		AttributeViewModel.setLolcatMode(lolcat); // revert previous lolcat mode
+		LolcatAction.getInstance().setLolcatEnabled(lolcat); // revert previous lolcat mode
 
 		// Revert back to the normal image space, and render a watermark.
 		g2d.setTransform(originalTransform);
