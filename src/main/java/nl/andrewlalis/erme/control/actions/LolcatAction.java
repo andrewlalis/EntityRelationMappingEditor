@@ -2,9 +2,7 @@ package nl.andrewlalis.erme.control.actions;
 
 import lombok.Getter;
 import lombok.Setter;
-import nl.andrewlalis.erme.EntityRelationMappingEditor;
 import nl.andrewlalis.erme.view.DiagramPanel;
-import nl.andrewlalis.erme.view.view_models.AttributeViewModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

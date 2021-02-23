@@ -1,11 +1,9 @@
 package nl.andrewlalis.erme.view.view_models;
 
-import nl.andrewlalis.erme.EntityRelationMappingEditor;
 import nl.andrewlalis.erme.control.actions.LolcatAction;
 import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.AttributeType;
 import nl.andrewlalis.erme.model.ForeignKeyAttribute;
-import nl.andrewlalis.erme.view.DiagramPanel;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
@@ -52,8 +50,6 @@ public class AttributeViewModel implements ViewModel {
 		Point offset = g.getClipBounds().getLocation();
 		g.translate(offset.x, offset.y);
 		Dimension viewportSize = g.getClipBounds().getSize();
-		g.drawRect(0, 0, viewportSize.width, viewportSize.height);
-		g.fillRect(-5, -5, 10, 10);
 
 		double diagonal_slope = (double) viewportSize.width / (double) viewportSize.height;
 		double perp_slope = -1f / diagonal_slope;
