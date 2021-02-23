@@ -52,8 +52,6 @@ public class AttributeViewModel implements ViewModel {
 		Point offset = g.getClipBounds().getLocation();
 		g.translate(offset.x, offset.y);
 		Dimension viewportSize = g.getClipBounds().getSize();
-		g.drawRect(0, 0, viewportSize.width, viewportSize.height);
-		g.fillRect(-5, -5, 10, 10);
 
 		double diagonal_slope = (double) viewportSize.width / (double) viewportSize.height;
 		double perp_slope = -1f / diagonal_slope;
