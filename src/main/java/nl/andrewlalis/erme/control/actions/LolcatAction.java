@@ -7,21 +7,21 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class LolcatAction extends AbstractAction {
-    private static LolcatAction instance;
-    public static LolcatAction getInstance() {
-        if (instance == null) {
-            instance = new LolcatAction();
-        }
-        return instance;
-    }
+	private static LolcatAction instance;
+	public static LolcatAction getInstance() {
+		if (instance == null) {
+			instance = new LolcatAction();
+		}
+		return instance;
+	}
 
-    public LolcatAction() {
-        super("Toggle Lolcat Mode");
-    }
+	public LolcatAction() {
+		super("Toggle Lolcat Mode");
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        AttributeViewModel.setLolcatMode(((AbstractButton)actionEvent.getSource()).getModel().isSelected());
-        EntityRelationMappingEditor.getFrame().getContentPane().repaint();
-    }
+	@Override
+	public void actionPerformed(ActionEvent actionEvent) {
+		AttributeViewModel.setLolcatMode(((AbstractButton)actionEvent.getSource()).getModel().isSelected());
+		EntityRelationMappingEditor.getFrame().getContentPane().repaint();
+	}
 }
