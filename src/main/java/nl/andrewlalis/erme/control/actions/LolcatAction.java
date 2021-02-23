@@ -28,6 +28,7 @@ public class LolcatAction extends AbstractAction {
 
 	public LolcatAction() {
 		super("Toggle Lolcat Mode");
+		this.putValue(SHORT_DESCRIPTION, "Does some wacky color stuff.");
 	}
 
 	@Override
