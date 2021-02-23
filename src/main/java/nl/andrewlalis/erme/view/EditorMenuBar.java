@@ -48,9 +48,7 @@ public class EditorMenuBar extends JMenuBar {
 	private JMenu buildHelpMenu() {
 		JMenu menu = new JMenu("Help");
 		menu.add(InstructionsAction.getInstance());
-		if (this.includeAdminActions) {
-			menu.add(MappingAlgorithmHelpAction.getInstance());
-		}
+		menu.add(MappingAlgorithmHelpAction.getInstance());
 		menu.add(LoadSampleModelAction.getInstance());
 		menu.add(AboutAction.getInstance());
 		return menu;
