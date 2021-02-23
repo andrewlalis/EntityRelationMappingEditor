@@ -1,8 +1,11 @@
 package nl.andrewlalis.erme.view.view_models;
 
+import nl.andrewlalis.erme.EntityRelationMappingEditor;
+import nl.andrewlalis.erme.control.actions.LolcatAction;
 import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.AttributeType;
 import nl.andrewlalis.erme.model.ForeignKeyAttribute;
+import nl.andrewlalis.erme.view.DiagramPanel;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
@@ -18,7 +21,8 @@ public class AttributeViewModel implements ViewModel {
 	public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
 	public static final Color FONT_COLOR = Color.BLACK;
 	public static final float FK_FONT_SIZE = 11.0f;
-
+	private static final float LOLCAT_SAT = 0.75f;
+	private static final float LOLCAT_BRIGHT = 1f;
 	private final Attribute attribute;
 
 	public AttributeViewModel(Attribute attribute) {
@@ -29,7 +33,7 @@ public class AttributeViewModel implements ViewModel {
 	public void draw(Graphics2D g) {
 		AttributedString as = this.getAttributedString(g);
 		Rectangle r = this.getBounds(g, as);
-		g.setColor(BACKGROUND_COLOR);
+		g.setColor(this.getBackgroundColor(r.x + r.width / 2, r.y + r.height / 2, g));
 		g.fillRect(r.x, r.y, r.width, r.height);
 		g.setColor(FONT_COLOR);
 		g.drawRect(r.x, r.y, r.width, r.height);
@@ -41,6 +45,29 @@ public class AttributeViewModel implements ViewModel {
 			g.drawString(fkAttribute.getFullReferenceName(), r.x + PADDING_X, r.y - PADDING_Y);
 			g.setFont(originalFont);
 		}
+	}
+
+	private Color getBackgroundColor(int x, int y, Graphics2D g) {
+		if (!LolcatAction.getInstance().isLolcatEnabled()) return BACKGROUND_COLOR;
+		Point offset = g.getClipBounds().getLocation();
+		g.translate(offset.x, offset.y);
+		Dimension viewportSize = g.getClipBounds().getSize();
+		g.drawRect(0, 0, viewportSize.width, viewportSize.height);
+		g.fillRect(-5, -5, 10, 10);
+
+		double diagonal_slope = (double) viewportSize.width / (double) viewportSize.height;
+		double perp_slope = -1f / diagonal_slope;
+
+		double perp_offset = y - perp_slope * x;
+
+		double x_intersect = perp_offset / (diagonal_slope - perp_slope);
+		double y_intersect = diagonal_slope * (perp_offset / (diagonal_slope - perp_slope));
+
+		double total_dist = Math.sqrt(viewportSize.height * viewportSize.height + viewportSize.width * viewportSize.width);
+		double dist_frac = Math.sqrt(x_intersect * x_intersect + y_intersect * y_intersect) / total_dist;
+
+		g.translate(-offset.x, -offset.y);
+		return Color.getHSBColor((float) dist_frac, LOLCAT_SAT, LOLCAT_BRIGHT);
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class EntityRelationMappingEditor {
 		if (includeAdminActions) {
 			System.out.println("Admin actions have been enabled.");
 		}
-		final EditorFrame frame = new EditorFrame(includeAdminActions);
+		EditorFrame frame = new EditorFrame(includeAdminActions);
 		frame.setVisible(true);
 	}
 
