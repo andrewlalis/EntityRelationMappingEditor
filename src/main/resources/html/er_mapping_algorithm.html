@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ER-Mapping Algorithm</title>
+</head>
+<body>
+
+<h1>Entity-Relation Mapping Algorithm</h1>
+<p>
+    Written by <a href="https://github.com/andrewlalis">@andrewlalis</a>. Adapted from <em>Fundamentals of Database Systems, 7th Edition.</em>
+</p>
+
+<h3>1. Mapping of Regular Entity Types</h3>
+<p>
+    For each regular (strong) entity type <em>E</em> in the ER schema, create a relation <em>R</em> that includes all the simple attributes of <em>E</em>. Include only the simple component attributes of a composite attribute. Choose one of the key attributes of <em>E</em> as the primary key for <em>R</em>. If the chosen key is a composite, then the set of simple attributes that form it will together form the primary key of <em>R</em>.
+</p>
+<p>
+    If multiple keys were identified for <em>E</em> during the design of the schema, then the information describing the attributes that form each additional key should be kept in order to specify additional (unique) keys of the relation <em>R</em>. Knowledge about keys is also kept for indexing purposes and other types of analyses.
+</p>
+
+<h3>2. Mapping of Weak Entity Types</h3>
+<p>
+    For each weak entity type <em>W</em> in the ER schema with owner entity type <em>E</em>, create a relation <em>R</em> and include all simple attributes (or simple components of composite attributes) of <em>W</em> as attributes of <em>R</em>. In addition, include as foreign key attributes of <em>R</em>, the primary key attribute(s) of the relation(s) that correspond to the owner entity type(s); this takes care of mapping the identifying relationship type of <em>W</em>. The primary key of <em>R</em> is the combination of the primary key(s) of the owner(s) and the partial key of the weak entity type <em>W</em>, if any. If there is a weak entity type <em>E<sub>2</sub></em> whose owner is also a weak entity type <em>E<sub>1</sub></em>, then <em>E<sub>1</sub></em> should be mapped first, to determine the primary key(s) that will be required by <em>E<sub>2</sub></em>.
+</p>
+
+<h3>3. Mapping of Binary 1:1 Relationship Types</h3>
+<p>
+    For each binary 1:1 relationship type <em>R</em> in the ER schema, identify the relations <em>S</em> and <em>T</em> that correspond to the entity types participating in <em>R</em>. There are three possible approaches, the first of which is the most useful and should be followed unless special conditions exist:
+</p>
+<ul>
+    <li>
+        <strong>Foreign Key Approach</strong>: Choose one of the relations, for example <em>S</em> (preferably one with total participation in the relationship), and include a foreign key in <em>S</em> which references the primary key of <em>T</em>. Include all simple attributes of the relationship type <em>R</em> as attributes of <em>S</em>.
+    </li>
+    <li>
+        <strong>Merged Relation Approach</strong>: Merge the two entity types and the relationship into a single relation. This is only possible when <em>both participations are total</em>, as ths would indicate that the two tables will have the exact same number of tuples at all times.
+    </li>
+    <li>
+        <strong>Cross-Reference or Relationship Relation Approach</strong>: Set up a third relation for the purpose of cross-referencing the primary keys of the two relations <em>S</em> and <em>T</em> representing the entity types. As we will see, this approach is required for binary M:N relationships. The resulting relation is called a <strong>relationship relation</strong> (or <strong>lookup table</strong>/<strong>join table</strong>), because each tuple in the relation represents an instance of the relationship that connects one tuple from <em>S</em> with one tuple from <em>T</em>. The relation will therefore include the primary key attributes of <em>S</em> and <em>T</em> as foreign keys to their respective relations. The drawback of this approach is the added complexity of an additional relation, and requiring extra join operations when combining related tuples from the tables.
+    </li>
+</ul>
+
+<h3>4. Mapping of Binary 1:N Relationship Types</h3>
+<p>
+    There are two possible approaches, the first of which is generally preferred as it reduces the number of tables.
+</p>
+<ul>
+    <li>
+        <strong>Foreign Key Approach</strong>:
+        For each regular binary 1:N (or N:1, depending on your perspective), identify the relation which represents the entity that's on the <em>N</em> side of the relationship, and include in that entity's relation a foreign key to the entity on the <em>1</em> side. Include any simple attributes (or simple components of composite attributes) of the 1:N relationship as attributes of the <em>N</em>-side entity.
+    </li>
+    <li>
+        <strong>Relationship Relation Approach</strong>:
+        An alternative approach is to use a <strong>relationship relation</strong>, where we create a separate relation <em>R</em> whose attributes are the primary keys of the two related entities, <em>S</em> and <em>T</em>. Those attributes will also be foreign keys to their respective entity relation. The primary key of <em>R</em> is the same as the primary key of the <em>N</em>-side entity.
+    </li>
+</ul>
+
+<h3>5. Mapping of Binary M:N Relationship Types</h3>
+<p>
+    The only option for M:N relationships in the traditional relational model is the <strong>relationship relation</strong>. For each binary M:N relationship type <em>R</em>, create a new relation <em>S</em> to represent <em>R</em>. Include foreign key attributes in <em>S</em> for the primary keys of both participating entities. The combination of both foreign keys forms the primary key of <em>S</em>. Also include any simple attributes of <em>R</em> as attributes of <em>S</em>.
+</p>
+
+<h3>6. Mapping of Multivalued Attributes</h3>
+<p>
+    For each multivalued attribute <em>A</em> from an entity <em>E</em>, create a new relation that contains a foreign key to <em>E</em>, and an attribute representing a single instance of <em>A</em>. The primary key of the new relation is the combination of the foreign key and the single attribute.
+</p>
+
+<h3>7. Mapping of <em>N</em>-ary Relationship Types</h3>
+<p>
+    For each <em>N</em>-ary relationship type <em>R</em>, where <em>n > 2</em>, create a new <strong>relationship relation</strong> <em>S</em> to represent <em>R</em>. Include as foreign key attributes in <em>S</em> the primary keys of the relations that represent the participating entity types. Also include any simple attributes of the <em>n</em>-ary relationship type (or simple components of the composite attributes) as attributes of <em>S</em>. The primary key of <em>S</em> is usually a combination of all the foreign keys that reference the participating entities (except the foreign keys to entities that participate in the relationship with a cardinality constraint of 1).
+</p>
+
+<h3>8. Options for Mapping Specialization or Generalization</h3>
+<p>
+    There are a few different options for mapping specializations and generalizations. The four most common are given here:
+</p>
+<ul>
+    <li>
+        <strong>Multiple Relations - Super and Subclasses</strong>:
+        Create a relation for the superclass just as you would for a normal entity. Create a relation for each subclass (specialization) of the superclass, which contains a foreign key to the super class, as well as all attributes of the subclass. The foreign key to the superclass will also be the subclass' primary key. This option works for any specialization (total or partial, disjoint or overlapping).
+    </li>
+    <li>
+        <strong>Multiple Relations - Subclasses Only</strong>:
+        Create a relation for each subclass, which contains all attributes of the subclass, alongside all attributes of the superclass, and use the superclass' primary key as the primary key for each relation. This option only works for specializations where the superclass has total participation (every entity in the superclass must belong to <em>at least</em> one subclass). This option is also only recommended for <em>disjointed</em> specializations, because an overlapping specialization would lead to duplicate superclass entity information in possibly many of the subclass relations.
+    </li>
+    <li>
+        <strong>Single Relation with One Type Attribute</strong>:
+        Create a single relation with the attributes of the superclass, combined with the attributes of every subclass, and a <strong>discriminating type</strong> attribute whose value indicates the subclass to which each tuple belongs. This option works only for a specialization whose subclasses are <em>disjoint</em>, and has the potential for generating a huge number of <code>NULL</code> values if there are many separate subclass-specific attributes.
+    </li>
+    <li>
+        <strong>Single Relation with Multiple Attribute Types</strong>:
+        Create a single relation with the attributes of the superclass and all subclasses, just as with the previous option, but instead of a single discriminating type attribute, create one <strong>boolean type attribute</strong> for each subclass, to indicate whether or not the entity belongs to a given subclass. This option is a variant of the previous, which has been designed to work with <em>overlapping</em> (but will also work with disjoint).
+    </li>
+</ul>
+
+<h3>9. Mapping of Union Types (Categories)</h3>
+<p>
+    For mapping a union type, we create a <strong>surrogate key</strong> attribute which should be appended to the relation of any entity that participates in the union. A relation is made for the union type itself, and that relation uses the surrogate key as its primary key. We then also declare the surrogate key in each participating entity relation as a foreign key to the union type's primary key.
+</p>
+</body>
+</html>

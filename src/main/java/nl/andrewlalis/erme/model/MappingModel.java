@@ -22,6 +22,8 @@ public class MappingModel implements Serializable, Viewable {
 
 	private transient Set<ModelChangeListener> changeListeners;
 
+	private final static long serialVersionUID = 6153776381873250304L;
+
 	public MappingModel() {
 		this.relations = new HashSet<>();
 		this.changeListeners = new HashSet<>();
@@ -68,6 +70,20 @@ public class MappingModel implements Serializable, Viewable {
 			}
 			removalSet.forEach(r::removeAttribute);
 		}
+	}
+
+	public Rectangle getRelationBounds() {
+		int minX = Integer.MAX_VALUE;
+		int minY = Integer.MAX_VALUE;
+		int maxX = Integer.MIN_VALUE;
+		int maxY = Integer.MIN_VALUE;
+		for (Relation r : this.getRelations()) {
+			minX = Math.min(minX, r.getPosition().x);
+			minY = Math.min(minY, r.getPosition().y);
+			maxX = Math.max(maxX, r.getPosition().x);
+			maxY = Math.max(maxY, r.getPosition().y);
+		}
+		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 	}
 
 	public void addChangeListener(ModelChangeListener listener) {

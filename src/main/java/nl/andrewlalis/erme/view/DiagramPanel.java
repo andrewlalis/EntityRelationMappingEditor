@@ -100,9 +100,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 
 	public Graphics2D getGraphics2D(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setFont(g.getFont().deriveFont(14.0f));
+		prepareGraphics(g2d);
 		return g2d;
 	}
 
@@ -129,5 +127,11 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		AddAttributeAction.getInstance().setModel(this.model);
 		RemoveAttributeAction.getInstance().setModel(this.model);
 		LoadSampleModelAction.getInstance().setDiagramPanel(this);
+	}
+
+	public static void prepareGraphics(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setFont(g.getFont().deriveFont(14.0f));
 	}
 }

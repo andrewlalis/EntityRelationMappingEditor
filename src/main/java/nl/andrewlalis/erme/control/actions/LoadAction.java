@@ -14,18 +14,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.prefs.Preferences;
 
 public class LoadAction extends AbstractAction {
-	private static LoadAction instance;
+	private static final String LAST_LOAD_LOCATION_KEY = "lastLoadLocation";
 
+	private static LoadAction instance;
 	public static LoadAction getInstance() {
 		if (instance == null) {
 			instance = new LoadAction();
 		}
 		return instance;
 	}
-
-	private File lastSelectedFile;
 
 	@Setter
 	private DiagramPanel diagramPanel;
@@ -38,14 +38,16 @@ public class LoadAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser fileChooser = new JFileChooser(this.lastSelectedFile);
+		JFileChooser fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"ERME Serialized Files",
 				"erme"
 		);
 		fileChooser.setFileFilter(filter);
-		if (this.lastSelectedFile != null) {
-			fileChooser.setSelectedFile(this.lastSelectedFile);
+		Preferences prefs = Preferences.userNodeForPackage(LoadAction.class);
+		String path = prefs.get(LAST_LOAD_LOCATION_KEY, null);
+		if (path != null) {
+			fileChooser.setSelectedFile(new File(path));
 		}
 		int choice = fileChooser.showOpenDialog((Component) e.getSource());
 		if (choice == JFileChooser.APPROVE_OPTION) {
@@ -56,8 +58,8 @@ public class LoadAction extends AbstractAction {
 			}
 			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(chosenFile))) {
 				MappingModel loadedModel = (MappingModel) ois.readObject();
-				this.lastSelectedFile = chosenFile;
 				this.diagramPanel.setModel(loadedModel);
+				prefs.put(LAST_LOAD_LOCATION_KEY, chosenFile.getAbsolutePath());
 			} catch (IOException | ClassNotFoundException | ClassCastException ex) {
 				ex.printStackTrace();
 				JOptionPane.showMessageDialog(fileChooser, "An error occurred and the file could not be read:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
