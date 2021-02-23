@@ -9,19 +9,22 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.prefs.Preferences;
 
 public class SaveAction extends AbstractAction {
-	private static SaveAction instance;
+	private static final String LAST_SAVE_LOCATION_KEY = "lastSaveLocation";
 
+	private static SaveAction instance;
 	public static SaveAction getInstance() {
 		if (instance == null) {
 			instance = new SaveAction();
 		}
 		return instance;
 	}
-
-	private File lastSelectedFile;
 
 	@Setter
 	private MappingModel model;
@@ -34,14 +37,16 @@ public class SaveAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser fileChooser = new JFileChooser(this.lastSelectedFile);
+		JFileChooser fileChooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"ERME Serialized Files",
 				"erme"
 		);
 		fileChooser.setFileFilter(filter);
-		if (this.lastSelectedFile != null) {
-			fileChooser.setSelectedFile(this.lastSelectedFile);
+		Preferences prefs = Preferences.userNodeForPackage(SaveAction.class);
+		String path = prefs.get(LAST_SAVE_LOCATION_KEY, null);
+		if (path != null) {
+			fileChooser.setSelectedFile(new File(path));
 		}
 		int choice = fileChooser.showSaveDialog((Component) e.getSource());
 		if (choice == JFileChooser.APPROVE_OPTION) {
@@ -56,7 +61,7 @@ public class SaveAction extends AbstractAction {
 			// TODO: Check for confirm before overwriting.
 			try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(chosenFile))) {
 				oos.writeObject(this.model);
-				this.lastSelectedFile = chosenFile;
+				prefs.put(LAST_SAVE_LOCATION_KEY, chosenFile.getAbsolutePath());
 				JOptionPane.showMessageDialog(fileChooser, "File saved successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
 			} catch (IOException ex) {
 				ex.printStackTrace();

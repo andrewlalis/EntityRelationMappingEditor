@@ -12,10 +12,16 @@ import java.net.URISyntaxException;
 
 public abstract class HtmlDocumentViewerAction extends AbstractAction {
 	private final String resourceFileName;
+	private final Dialog.ModalityType modalityType;
 
 	public HtmlDocumentViewerAction(String name, String resourceFileName) {
+		this(name, resourceFileName, Dialog.ModalityType.APPLICATION_MODAL);
+	}
+
+	public HtmlDocumentViewerAction(String name, String resourceFileName, Dialog.ModalityType modalityType) {
 		super(name);
 		this.resourceFileName = resourceFileName;
+		this.modalityType = modalityType;
 	}
 
 	@Override
@@ -23,7 +29,7 @@ public abstract class HtmlDocumentViewerAction extends AbstractAction {
 		JDialog dialog = new JDialog(
 				SwingUtilities.getWindowAncestor((Component) e.getSource()),
 				(String) this.getValue(NAME),
-				Dialog.ModalityType.APPLICATION_MODAL
+				this.modalityType
 		);
 		JTextPane textPane = new JTextPane();
 		textPane.setEditable(false);
