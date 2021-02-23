@@ -49,19 +49,25 @@ public class AttributeViewModel implements ViewModel {
 
 	private Color getBackgroundColor(int x, int y, Graphics2D g) {
 		if (!LolcatAction.getInstance().isLolcatEnabled()) return BACKGROUND_COLOR;
+		Point offset = g.getClipBounds().getLocation();
+		g.translate(offset.x, offset.y);
 		Dimension viewportSize = g.getClipBounds().getSize();
+		g.drawRect(0, 0, viewportSize.width, viewportSize.height);
+		g.fillRect(-5, -5, 10, 10);
 
-		double dx = viewportSize.width;
-		double dy = viewportSize.height;
-		double mag = Math.sqrt(dx * dx + dy * dy);
-		dx /= mag;
-		dy /= mag;
+		double diagonal_slope = (double) viewportSize.width / (double) viewportSize.height;
+		double perp_slope = -1f / diagonal_slope;
 
-		double lambda = (dx * x + dy * y);
-		double diag_val = Math.sqrt(Math.pow(dx * lambda, 2) + Math.pow(dy * lambda, 2)) / mag;
-		System.out.println(diag_val);
+		double perp_offset = y - perp_slope * x;
 
-		return Color.getHSBColor((float) diag_val, LOLCAT_SAT, LOLCAT_BRIGHT);
+		double x_intersect = perp_offset / (diagonal_slope - perp_slope);
+		double y_intersect = diagonal_slope * (perp_offset / (diagonal_slope - perp_slope));
+
+		double total_dist = Math.sqrt(viewportSize.height * viewportSize.height + viewportSize.width * viewportSize.width);
+		double dist_frac = Math.sqrt(x_intersect * x_intersect + y_intersect * y_intersect) / total_dist;
+
+		g.translate(-offset.x, -offset.y);
+		return Color.getHSBColor((float) dist_frac, LOLCAT_SAT, LOLCAT_BRIGHT);
 	}
 
 	@Override
