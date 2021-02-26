@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * Represents a single "relation" or table in the diagram.
  */
 @Getter
-public class Relation implements Serializable, Viewable {
+public class Relation implements Serializable, Viewable, Comparable<Relation> {
 	private final MappingModel model;
 	private Point position;
 	private String name;
@@ -96,5 +96,10 @@ public class Relation implements Serializable, Viewable {
 		Relation c = new Relation(newModel, new Point(this.getPosition()), this.getName());
 		this.getAttributes().forEach(a -> c.addAttribute(a.copy(c)));
 		return c;
+	}
+
+	@Override
+	public int compareTo(Relation relation) {
+		return this.name.compareTo(relation.name);
 	}
 }
