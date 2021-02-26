@@ -26,8 +26,8 @@ public class AutoPositionAction extends AbstractAction {
 	@Setter
 	private MappingModel model;
 	public AutoPositionAction() {
-		super("Position Relations");
-		this.putValue(SHORT_DESCRIPTION, "Automatically Position Relations");
+		super("Align Relations");
+		this.putValue(SHORT_DESCRIPTION, "Automatically Align Relations");
 	}
 
 	public static AutoPositionAction getInstance() {
