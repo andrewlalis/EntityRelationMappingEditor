@@ -64,6 +64,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
 		this.updateActionModels();
+		newModel.addChangeListener(OrderableListPanel.getInstance());
 		this.centerModel();
 		this.repaint();
 	}

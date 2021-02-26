@@ -28,7 +28,6 @@ public class MappingModel implements Serializable, Viewable {
 	public MappingModel() {
 		this.relations = new HashSet<>();
 		this.changeListeners = new HashSet<>();
-		this.addChangeListener(OrderableListPanel.getInstance());
 	}
 
 	public void addRelation(Relation r) {
