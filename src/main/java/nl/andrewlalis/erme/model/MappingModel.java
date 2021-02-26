@@ -1,6 +1,7 @@
 package nl.andrewlalis.erme.model;
 
 import lombok.Getter;
+import nl.andrewlalis.erme.view.OrderableListPanel;
 import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 import nl.andrewlalis.erme.view.view_models.ViewModel;
 
@@ -27,6 +28,7 @@ public class MappingModel implements Serializable, Viewable {
 	public MappingModel() {
 		this.relations = new HashSet<>();
 		this.changeListeners = new HashSet<>();
+		this.addChangeListener(OrderableListPanel.getInstance());
 	}
 
 	public void addRelation(Relation r) {
