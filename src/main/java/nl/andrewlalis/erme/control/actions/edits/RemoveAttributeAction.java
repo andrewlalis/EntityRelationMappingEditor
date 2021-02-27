@@ -7,12 +7,10 @@ import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class RemoveAttributeAction extends AbstractAction {
 	private static RemoveAttributeAction instance;

@@ -54,7 +54,7 @@ public class DiagramMouseListener extends MouseAdapter {
 
 		// If the user right-clicked, show a popup menu.
 		if (e.getButton() == MouseEvent.BUTTON3) {
-			DiagramPopupMenu popupMenu = new DiagramPopupMenu(this.model);
+			DiagramPopupMenu popupMenu = new DiagramPopupMenu(this.model, e);
 			popupMenu.show(panel, e.getX(), e.getY());
 		}
 

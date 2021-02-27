@@ -1,6 +1,7 @@
 package nl.andrewlalis.erme.control.actions.edits;
 
 import lombok.Setter;
+import nl.andrewlalis.erme.control.actions.LocalAction;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
@@ -11,9 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-public class AddRelationAction extends AbstractAction {
+public class AddRelationAction extends LocalAction {
 	private static AddRelationAction instance;
-
 	public static AddRelationAction getInstance() {
 		if (instance == null) {
 			instance = new AddRelationAction();
@@ -44,7 +44,12 @@ public class AddRelationAction extends AbstractAction {
 		if (name != null) {
 			final boolean isFirstRelation = this.model.getRelations().isEmpty();
 			Point p;
-			if (isFirstRelation) {
+			if (this.hasLocation()) {
+				p = new Point(
+						this.getLocation().x - this.diagramPanel.getPanningTranslation().x,
+						this.getLocation().y - this.diagramPanel.getPanningTranslation().y
+				);
+			} else if (isFirstRelation) {
 				p = new Point(100, 100);
 			} else {
 				Rectangle bounds = this.model.getRelationBounds();
