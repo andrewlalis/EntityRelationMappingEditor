@@ -122,13 +122,22 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		SaveAction.getInstance().setModel(this.model);
 		LoadAction.getInstance().setDiagramPanel(this);
 		ExportToImageAction.getInstance().setModel(this.model);
+		ExportToImageAction.getInstance().setDiagramPanel(this);
 		AddRelationAction.getInstance().setModel(this.model);
 		AddRelationAction.getInstance().setDiagramPanel(this);
 		RemoveRelationAction.getInstance().setModel(this.model);
+		RemoveRelationAction.getInstance().setDiagramPanel(this);
 		AddAttributeAction.getInstance().setModel(this.model);
+		AddAttributeAction.getInstance().setDiagramPanel(this);
 		RemoveAttributeAction.getInstance().setModel(this.model);
+		RemoveAttributeAction.getInstance().setDiagramPanel(this);
 		LoadSampleModelAction.getInstance().setDiagramPanel(this);
 		LolcatAction.getInstance().setDiagramPanel(this);
+		AboutAction.getInstance().setDiagramPanel(this);
+		ExitAction.getInstance().setDiagramPanel(this);
+		InstructionsAction.getInstance().setDiagramPanel(this);
+		MappingAlgorithmHelpAction.getInstance().setDiagramPanel(this);
+		SaveAction.getInstance().setDiagramPanel(this);
 	}
 
 	public static void prepareGraphics(Graphics2D g) {

@@ -3,6 +3,7 @@ package nl.andrewlalis.erme.control.actions.edits;
 import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
+import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,8 @@ public class RemoveRelationAction extends AbstractAction {
 
 	@Setter
 	private MappingModel model;
+	@Setter
+	private DiagramPanel diagramPanel;
 
 	public RemoveRelationAction() {
 		super("Remove Relation");
@@ -33,7 +36,7 @@ public class RemoveRelationAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		if (this.model.getSelectedRelations().isEmpty()) {
 			JOptionPane.showMessageDialog(
-					(Component) e.getSource(),
+					this.diagramPanel,
 					"No relations selected. Select at least one relation to remove.",
 					"No Relations Selected",
 					JOptionPane.WARNING_MESSAGE

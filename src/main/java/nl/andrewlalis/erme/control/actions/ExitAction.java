@@ -1,5 +1,8 @@
 package nl.andrewlalis.erme.control.actions;
 
+import lombok.Setter;
+import nl.andrewlalis.erme.view.DiagramPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +19,9 @@ public class ExitAction extends AbstractAction {
 		return instance;
 	}
 
+	@Setter
+	private DiagramPanel diagramPanel;
+
 	public ExitAction() {
 		super("Exit");
 		this.putValue(Action.SHORT_DESCRIPTION, "Exit the program.");
@@ -25,7 +31,7 @@ public class ExitAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int choice = JOptionPane.showConfirmDialog(
-				(Component) e.getSource(),
+				this.diagramPanel,
 				"Are you sure you want to quit?\nAll unsaved data will be lost.",
 				"Confirm Exit",
 				JOptionPane.OK_CANCEL_OPTION,

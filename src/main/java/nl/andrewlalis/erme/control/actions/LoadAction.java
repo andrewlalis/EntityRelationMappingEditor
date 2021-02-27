@@ -49,7 +49,7 @@ public class LoadAction extends AbstractAction {
 		if (path != null) {
 			fileChooser.setSelectedFile(new File(path));
 		}
-		int choice = fileChooser.showOpenDialog((Component) e.getSource());
+		int choice = fileChooser.showOpenDialog(this.diagramPanel);
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File chosenFile = fileChooser.getSelectedFile();
 			if (chosenFile == null || chosenFile.isDirectory() || !chosenFile.exists() || !chosenFile.canRead()) {

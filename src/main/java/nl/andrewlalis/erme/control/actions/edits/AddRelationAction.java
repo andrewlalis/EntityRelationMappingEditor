@@ -35,9 +35,8 @@ public class AddRelationAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Component c = (Component) e.getSource();
 		String name = JOptionPane.showInputDialog(
-				c,
+				this.diagramPanel,
 				"Enter the name of the relation.",
 				"Add Relation",
 				JOptionPane.PLAIN_MESSAGE

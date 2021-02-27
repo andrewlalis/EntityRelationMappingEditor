@@ -1,5 +1,8 @@
 package nl.andrewlalis.erme.control.actions;
 
+import lombok.Setter;
+import nl.andrewlalis.erme.view.DiagramPanel;
+
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
@@ -24,10 +27,13 @@ public abstract class HtmlDocumentViewerAction extends AbstractAction {
 		this.modalityType = modalityType;
 	}
 
+	@Setter
+	private DiagramPanel diagramPanel;
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JDialog dialog = new JDialog(
-				SwingUtilities.getWindowAncestor((Component) e.getSource()),
+				SwingUtilities.getWindowAncestor(this.diagramPanel),
 				(String) this.getValue(NAME),
 				this.modalityType
 		);
@@ -54,7 +60,7 @@ public abstract class HtmlDocumentViewerAction extends AbstractAction {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(
-					(Component) e.getSource(),
+					this.diagramPanel,
 					"An error occured:\n" + ex.getMessage(),
 					"Error",
 					JOptionPane.ERROR_MESSAGE
@@ -68,7 +74,7 @@ public abstract class HtmlDocumentViewerAction extends AbstractAction {
 		dialog.setMaximumSize(new Dimension(600, 800));
 		dialog.setPreferredSize(new Dimension(600, 800));
 		dialog.pack();
-		dialog.setLocationRelativeTo(null);
+		dialog.setLocationRelativeTo(this.diagramPanel);
 		dialog.setVisible(true);
 	}
 
