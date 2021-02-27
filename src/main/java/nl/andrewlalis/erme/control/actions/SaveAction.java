@@ -2,6 +2,7 @@ package nl.andrewlalis.erme.control.actions;
 
 import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
+import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -28,6 +29,8 @@ public class SaveAction extends AbstractAction {
 
 	@Setter
 	private MappingModel model;
+	@Setter
+	private DiagramPanel diagramPanel;
 
 	public SaveAction() {
 		super("Save");
@@ -48,7 +51,7 @@ public class SaveAction extends AbstractAction {
 		if (path != null) {
 			fileChooser.setSelectedFile(new File(path));
 		}
-		int choice = fileChooser.showSaveDialog((Component) e.getSource());
+		int choice = fileChooser.showSaveDialog(this.diagramPanel);
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File chosenFile = fileChooser.getSelectedFile();
 			if (chosenFile == null || chosenFile.isDirectory()) {
