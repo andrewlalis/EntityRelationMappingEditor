@@ -78,11 +78,15 @@ public class AutoPositionAction extends AbstractAction {
 	 */
 	private void positionRelations(ArrayList<Relation> orderList) {
 		if (orderList.isEmpty()) return;
-
-		int vertSpace = (int) orderList.get(0).getViewModel().getBounds(diagramPanel.getGraphics2D()).getHeight() + PADDING;
+		AtomicInteger vertSpace = new AtomicInteger(0);
+		orderList.forEach(r -> {
+			int height = (int) r.getViewModel().getBounds(diagramPanel.getGraphics2D()).getHeight();
+			vertSpace.set(Math.max(vertSpace.get(), height));
+		});
+		vertSpace.addAndGet(PADDING);
 		AtomicInteger vertPos = new AtomicInteger(MARGIN);
 		orderList.forEach(r -> {
-			r.setPosition(new Point(MARGIN, vertPos.getAndAdd(vertSpace)));
+			r.setPosition(new Point(MARGIN, vertPos.getAndAdd(vertSpace.get())));
 		});
 
 		diagramPanel.centerModel();
