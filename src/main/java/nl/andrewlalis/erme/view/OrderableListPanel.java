@@ -63,20 +63,20 @@ public class OrderableListPanel extends JPanel implements ModelChangeListener {
 	 * Updates removed and new relations in the listModel. Does it in a special way to preserve existing ordering in the
 	 * list, so user has to do minimal re-sorting.
 	 */
-    @Override
-    public void onModelChanged() {
-    	if (this.model == null) return;
+	@Override
+	public void onModelChanged() {
+		if (this.model == null) return;
 		Set<Relation> newRelations = new HashSet<>(model.getRelations());
 		newRelations.removeAll(listModel.getList());
 
-        Set<Relation> removedRelations = new HashSet<>(listModel.getList());
-        removedRelations.removeAll(model.getRelations());
+		Set<Relation> removedRelations = new HashSet<>(listModel.getList());
+		removedRelations.removeAll(model.getRelations());
 
-        listModel.removeAll(removedRelations);
-        listModel.addAll(newRelations);
-    }
+		listModel.removeAll(removedRelations);
+		listModel.addAll(newRelations);
+	}
 
-    public ArrayList<Relation> getOrderList() {
-    	return new ArrayList<>(listModel.getList());
+	public ArrayList<Relation> getOrderList() {
+		return new ArrayList<>(listModel.getList());
 	}
 }
