@@ -59,7 +59,7 @@ public class AutoPositionAction extends AbstractAction {
 				0);
 		if (choice == null) return;
 		if (choice.equals(choices[0])) {
-			positionRelation();
+			positionRelations(getAlphabeticRelationList());
 		} else if (choice.equals(choices[1])) {
 			JOptionPane.showConfirmDialog(
 					null,
@@ -95,9 +95,9 @@ public class AutoPositionAction extends AbstractAction {
 	/**
 	 * Creates an orderList by grabbing all relations and sorting them
 	 */
-	private void positionRelation() {
+	private ArrayList<Relation> getAlphabeticRelationList() {
 		ArrayList<Relation> relationList = new ArrayList<>(model.getRelations());
 		Collections.sort(relationList);
-		positionRelations(relationList);
+		return relationList;
 	}
 }
