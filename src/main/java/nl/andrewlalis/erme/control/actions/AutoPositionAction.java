@@ -41,7 +41,7 @@ public class AutoPositionAction extends AbstractAction {
 	public void actionPerformed(ActionEvent actionEvent) {
 		if (model.getRelations().size() == 0) {
 			JOptionPane.showMessageDialog(
-					null,
+					this.diagramPanel,
 					"Cannot position all relations when there are no relations present",
 					"Relations Required",
 					JOptionPane.WARNING_MESSAGE
@@ -50,7 +50,7 @@ public class AutoPositionAction extends AbstractAction {
 		}
 		String[] choices = new String[]{"Alphabeticaly", "Custom Order"};
 		String choice = (String) JOptionPane.showInputDialog(
-				null,
+				this.diagramPanel,
 				"Select how to sort the relations",
 				"Position Relations",
 				JOptionPane.PLAIN_MESSAGE,
@@ -62,7 +62,7 @@ public class AutoPositionAction extends AbstractAction {
 			positionRelations(getAlphabeticRelationList());
 		} else if (choice.equals(choices[1])) {
 			JOptionPane.showConfirmDialog(
-					null,
+					this.diagramPanel,
 					OrderableListPanel.getInstance(),
 					"teststring",
 					JOptionPane.OK_CANCEL_OPTION,
