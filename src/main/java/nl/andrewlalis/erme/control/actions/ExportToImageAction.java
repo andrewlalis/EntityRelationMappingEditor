@@ -34,6 +34,8 @@ public class ExportToImageAction extends AbstractAction {
 
 	@Setter
 	private MappingModel model;
+	@Setter
+	private DiagramPanel diagramPanel;
 
 	public ExportToImageAction() {
 		super("Export to Image");
@@ -45,7 +47,7 @@ public class ExportToImageAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		if (this.model.getRelations().isEmpty()) {
 			JOptionPane.showMessageDialog(
-					(Component) e.getSource(),
+					this.diagramPanel,
 					"Model is empty. Add some relations before exporting to an image.",
 					"Model Empty",
 					JOptionPane.WARNING_MESSAGE
@@ -61,7 +63,7 @@ public class ExportToImageAction extends AbstractAction {
 		if (path != null) {
 			fileChooser.setSelectedFile(new File(path));
 		}
-		int choice = fileChooser.showSaveDialog((Component) e.getSource());
+		int choice = fileChooser.showSaveDialog(this.diagramPanel);
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File chosenFile = fileChooser.getSelectedFile();
 			if (chosenFile == null || chosenFile.isDirectory()) {
@@ -82,7 +84,7 @@ public class ExportToImageAction extends AbstractAction {
 				ImageIO.write(render, extension, chosenFile);
 				prefs.put(LAST_EXPORT_LOCATION_KEY, chosenFile.getAbsolutePath());
 				JOptionPane.showMessageDialog(
-						fileChooser,
+						this.diagramPanel,
 						"Image export completed in " + String.format("%.4f", durationSeconds) + " seconds.\n" +
 								"Resolution: " + render.getWidth() + "x" + render.getHeight(),
 						"Image Export Complete",

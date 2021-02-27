@@ -4,6 +4,7 @@ import lombok.Setter;
 import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
+import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,8 @@ public class RemoveAttributeAction extends AbstractAction {
 
 	@Setter
 	private MappingModel model;
+	@Setter
+	private DiagramPanel diagramPanel;
 
 	public RemoveAttributeAction() {
 		super("Remove Attribute");
@@ -37,7 +40,7 @@ public class RemoveAttributeAction extends AbstractAction {
 		List<Relation> selectedRelations = this.model.getSelectedRelations();
 		if (selectedRelations.size() != 1 || selectedRelations.get(0).getAttributes().isEmpty()) {
 			JOptionPane.showMessageDialog(
-					(Component) e.getSource(),
+					this.diagramPanel,
 					"A single relation with at least one attribute must be selected to remove an attribute.",
 					"Single Relation With Attribute Required",
 					JOptionPane.WARNING_MESSAGE
@@ -46,7 +49,7 @@ public class RemoveAttributeAction extends AbstractAction {
 		}
 		Relation r = selectedRelations.get(0);
 		Attribute attribute = (Attribute) JOptionPane.showInputDialog(
-				(Component) e.getSource(),
+				this.diagramPanel,
 				"Select the attribute to remove.",
 				"Select Attribute",
 				JOptionPane.PLAIN_MESSAGE,

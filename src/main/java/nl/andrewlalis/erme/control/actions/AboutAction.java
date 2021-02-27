@@ -1,6 +1,8 @@
 package nl.andrewlalis.erme.control.actions;
 
+import lombok.Setter;
 import nl.andrewlalis.erme.EntityRelationMappingEditor;
+import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,9 @@ public class AboutAction extends AbstractAction {
 		return instance;
 	}
 
+	@Setter
+	private DiagramPanel diagramPanel;
+
 	public AboutAction() {
 		super("About");
 		this.putValue(SHORT_DESCRIPTION, "Show some information about this program.");
@@ -22,7 +27,7 @@ public class AboutAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JOptionPane.showMessageDialog(
-				(Component) e.getSource(),
+				this.diagramPanel,
 				"Entity-Relation Mapping Editor\n" +
 						"by Andrew Lalis\n" +
 						"Version " + EntityRelationMappingEditor.VERSION + "\n" +
