@@ -64,6 +64,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
 		this.updateActionModels();
+		newModel.addChangeListener(OrderableListPanel.getInstance());
 		this.centerModel();
 		this.repaint();
 	}
@@ -133,7 +134,10 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		RemoveAttributeAction.getInstance().setDiagramPanel(this);
 		LoadSampleModelAction.getInstance().setDiagramPanel(this);
 		LolcatAction.getInstance().setDiagramPanel(this);
-		AboutAction.getInstance().setDiagramPanel(this);
+    AutoPositionAction.getInstance().setDiagramPanel(this);
+		AutoPositionAction.getInstance().setModel(this.model);
+		OrderableListPanel.getInstance().setModel(this.model);
+    AboutAction.getInstance().setDiagramPanel(this);
 		ExitAction.getInstance().setDiagramPanel(this);
 		InstructionsAction.getInstance().setDiagramPanel(this);
 		MappingAlgorithmHelpAction.getInstance().setDiagramPanel(this);

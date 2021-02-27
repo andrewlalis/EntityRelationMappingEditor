@@ -40,6 +40,7 @@ public class EditorMenuBar extends JMenuBar {
 		menu.add(AddAttributeAction.getInstance());
 		menu.add(RemoveAttributeAction.getInstance());
 		menu.add(new JCheckBoxMenuItem(LolcatAction.getInstance()));
+		menu.add(AutoPositionAction.getInstance());
 		menu.addSeparator();
 		menu.add(UndoAction.getInstance());
 		menu.add(RedoAction.getInstance());

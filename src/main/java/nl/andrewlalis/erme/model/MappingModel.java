@@ -1,6 +1,7 @@
 package nl.andrewlalis.erme.model;
 
 import lombok.Getter;
+import nl.andrewlalis.erme.view.OrderableListPanel;
 import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 import nl.andrewlalis.erme.view.view_models.ViewModel;
 
