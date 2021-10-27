@@ -27,7 +27,7 @@ public class RelationViewModel implements ViewModel {
 	 */
 	public static final int ATTRIBUTE_SEPARATION = 10;
 
-	public static final Color SELECTED_COLOR = new Color(204, 224, 255);
+	public static final Color SELECTED_COLOR = new Color(204, 224, 255, 127);
 	public static final Color NAME_COLOR = Color.BLACK;
 
 	private final Relation relation;

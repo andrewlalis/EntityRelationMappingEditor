@@ -16,7 +16,7 @@ import java.text.AttributedString;
 public class AttributeViewModel implements ViewModel {
 	public static final int PADDING_X = 5;
 	public static final int PADDING_Y = 5;
-	public static final Color BACKGROUND_COLOR = Color.LIGHT_GRAY;
+	public static final Color BACKGROUND_COLOR = new Color(192, 192, 192, 127);
 	public static final Color FONT_COLOR = Color.BLACK;
 	public static final float FK_FONT_SIZE = 11.0f;
 	private static final float LOLCAT_SAT = 0.75f;

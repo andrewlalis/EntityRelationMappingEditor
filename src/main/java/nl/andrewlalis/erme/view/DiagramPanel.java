@@ -135,6 +135,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		RemoveAttributeAction.getInstance().setDiagramPanel(this);
 		LoadSampleModelAction.getInstance().setDiagramPanel(this);
 		LolcatAction.getInstance().setDiagramPanel(this);
+		VisualizeReferencesAction.getInstance().setDiagramPanel(this);
     	AutoPositionAction.getInstance().setDiagramPanel(this);
 		AutoPositionAction.getInstance().setModel(this.model);
 		OrderableListPanel.getInstance().setModel(this.model);

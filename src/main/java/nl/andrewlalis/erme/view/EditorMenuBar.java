@@ -15,6 +15,7 @@ public class EditorMenuBar extends JMenuBar {
 	public EditorMenuBar() {
 		this.add(this.buildFileMenu());
 		this.add(this.buildEditMenu());
+		this.add(this.buildViewMenu());
 		this.add(this.buildHelpMenu());
 	}
 
@@ -36,11 +37,17 @@ public class EditorMenuBar extends JMenuBar {
 		menu.add(RemoveRelationAction.getInstance());
 		menu.add(AddAttributeAction.getInstance());
 		menu.add(RemoveAttributeAction.getInstance());
-		menu.add(new JCheckBoxMenuItem(LolcatAction.getInstance()));
 		menu.add(AutoPositionAction.getInstance());
 		menu.addSeparator();
 		menu.add(UndoAction.getInstance());
 		menu.add(RedoAction.getInstance());
+		return menu;
+	}
+
+	private JMenu buildViewMenu() {
+		JMenu menu = new JMenu("View");
+		menu.add(new JCheckBoxMenuItem(LolcatAction.getInstance()));
+		menu.add(new JCheckBoxMenuItem(VisualizeReferencesAction.getInstance()));
 		return menu;
 	}
 

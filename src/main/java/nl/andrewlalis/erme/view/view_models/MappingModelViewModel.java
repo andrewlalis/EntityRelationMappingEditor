@@ -1,5 +1,8 @@
 package nl.andrewlalis.erme.view.view_models;
 
+import nl.andrewlalis.erme.control.actions.VisualizeReferencesAction;
+import nl.andrewlalis.erme.model.Attribute;
+import nl.andrewlalis.erme.model.ForeignKeyAttribute;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 
@@ -17,9 +20,32 @@ public class MappingModelViewModel implements ViewModel {
 
 	@Override
 	public void draw(Graphics2D g) {
+		if (VisualizeReferencesAction.getInstance().isReferenceVisualizationEnabled()) {
+			visualizeReferences(g);
+		}
 		for (Relation r : this.model.getRelations()) {
 			r.getViewModel().draw(g);
 		}
+	}
+
+	private void visualizeReferences(Graphics2D g) {
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setColor(Color.BLUE);
+		Stroke dashedStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0, new float[]{5}, 0);
+		g2.setStroke(dashedStroke);
+		for (Relation r : this.model.getRelations()) {
+			for (Attribute a : r.getAttributes()) {
+				if (a instanceof ForeignKeyAttribute) {
+					ForeignKeyAttribute fk = (ForeignKeyAttribute) a;
+					Rectangle sourceBounds = fk.getViewModel().getBounds(g);
+					Rectangle targetBounds = fk.getReference().getViewModel().getBounds(g);
+					Point sourcePoint = new Point(sourceBounds.x + sourceBounds.width / 2, sourceBounds.y);
+					Point targetPoint = new Point(targetBounds.x + targetBounds.width / 2, targetBounds.y + targetBounds.height);
+					g2.drawLine(sourcePoint.x, sourcePoint.y, targetPoint.x, targetPoint.y);
+				}
+			}
+		}
+		g2.dispose();
 	}
 
 	@Override
