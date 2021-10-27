@@ -7,6 +7,8 @@ import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 
 import java.awt.*;
+import java.awt.color.ColorSpace;
+import java.util.Random;
 
 /**
  * View model for rendering an entire {@code MappingModel} object.
@@ -30,17 +32,19 @@ public class MappingModelViewModel implements ViewModel {
 
 	private void visualizeReferences(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setColor(Color.BLUE);
 		Stroke dashedStroke = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND, 0, new float[]{5}, 0);
 		g2.setStroke(dashedStroke);
 		for (Relation r : this.model.getRelations()) {
 			for (Attribute a : r.getAttributes()) {
 				if (a instanceof ForeignKeyAttribute) {
 					ForeignKeyAttribute fk = (ForeignKeyAttribute) a;
+					// Generate a random HSB color for the line, seeded using the referenced attribute's hash code.
+					Random random = new Random(fk.getReference().hashCode());
+					g2.setColor(Color.getHSBColor(random.nextFloat(), 1.0f, 0.8f));
 					Rectangle sourceBounds = fk.getViewModel().getBounds(g);
 					Rectangle targetBounds = fk.getReference().getViewModel().getBounds(g);
-					Point sourcePoint = new Point(sourceBounds.x + sourceBounds.width / 2, sourceBounds.y);
-					Point targetPoint = new Point(targetBounds.x + targetBounds.width / 2, targetBounds.y + targetBounds.height);
+					Point sourcePoint = new Point(sourceBounds.x + sourceBounds.width / 2, sourceBounds.y + 3 * targetBounds.height / 4);
+					Point targetPoint = new Point(targetBounds.x + targetBounds.width / 2, targetBounds.y + 3 * targetBounds.height / 4);
 					g2.drawLine(sourcePoint.x, sourcePoint.y, targetPoint.x, targetPoint.y);
 				}
 			}

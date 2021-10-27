@@ -51,7 +51,7 @@ public class Attribute {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(type, name);
+		return Objects.hash(type, relation, name);
 	}
 
 	@Override
