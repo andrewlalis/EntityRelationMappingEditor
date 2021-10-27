@@ -12,10 +12,7 @@ import javax.swing.*;
  * The menu bar that's visible atop the application.
  */
 public class EditorMenuBar extends JMenuBar {
-	private final boolean includeAdminActions;
-
-	public EditorMenuBar(boolean includeAdminActions) {
-		this.includeAdminActions = includeAdminActions;
+	public EditorMenuBar() {
 		this.add(this.buildFileMenu());
 		this.add(this.buildEditMenu());
 		this.add(this.buildHelpMenu());

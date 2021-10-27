@@ -3,14 +3,13 @@ package nl.andrewlalis.erme.model;
 import lombok.Getter;
 import nl.andrewlalis.erme.view.view_models.AttributeViewModel;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A single value that belongs to a relation.
  */
 @Getter
-public class Attribute implements Serializable {
+public class Attribute {
 	private final Relation relation;
 	private AttributeType type;
 	private String name;
@@ -32,7 +31,7 @@ public class Attribute implements Serializable {
 		this.name = name;
 		this.relation.getModel().fireChangedEvent();
 	}
-
+	
 	public AttributeViewModel getViewModel() {
 		if (this.viewModel == null) {
 			this.viewModel = new AttributeViewModel(this);

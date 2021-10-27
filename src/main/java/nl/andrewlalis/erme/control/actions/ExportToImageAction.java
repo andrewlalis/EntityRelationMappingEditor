@@ -4,7 +4,6 @@ import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
-import nl.andrewlalis.erme.view.view_models.AttributeViewModel;
 import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 
 import javax.imageio.ImageIO;
@@ -77,9 +76,18 @@ public class ExportToImageAction extends AbstractAction {
 			} else {
 				chosenFile = new File(chosenFile.getParent(), chosenFile.getName() + '.' + extension);
 			}
+			String input = JOptionPane.showInputDialog(this.diagramPanel, "Choose a scale for the image.", "3.0");
+			float scale;
+			try {
+				scale = Float.parseFloat(input);
+				if (scale <= 0.0f || scale > 64.0f) throw new IllegalArgumentException();
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(this.diagramPanel, "Invalid scale value. Should be a positive number less than 64.", "Invalid Scale", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
 			try {
 				long start = System.currentTimeMillis();
-				BufferedImage render = this.renderModel();
+				BufferedImage render = this.renderModel(scale);
 				double durationSeconds = (System.currentTimeMillis() - start) / 1000.0;
 				ImageIO.write(render, extension, chosenFile);
 				prefs.put(LAST_EXPORT_LOCATION_KEY, chosenFile.getAbsolutePath());
@@ -97,12 +105,19 @@ public class ExportToImageAction extends AbstractAction {
 		}
 	}
 
-	private BufferedImage renderModel() {
+	/**
+	 * Renders the mapping model to an image with the given resolution.
+	 * @param scale The scale to use. Should be greater than zero.
+	 * @return The image which was rendered.
+	 */
+	private BufferedImage renderModel(float scale) {
 		// Prepare a tiny sample image that we can use to determine the bounds of the model in a graphics context.
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = bufferedImage.createGraphics();
 		DiagramPanel.prepareGraphics(g2d);
 		final Rectangle bounds = this.model.getViewModel().getBounds(g2d);
+		bounds.width *= scale;
+		bounds.height *= scale;
 
 		// Prepare the output image.
 		BufferedImage outputImage = new BufferedImage(bounds.width, bounds.height + 20, BufferedImage.TYPE_INT_RGB);
@@ -112,7 +127,10 @@ public class ExportToImageAction extends AbstractAction {
 
 		// Transform the graphics space to account for the model's offset from origin.
 		AffineTransform originalTransform = g2d.getTransform();
-		g2d.setTransform(AffineTransform.getTranslateInstance(-bounds.x, -bounds.y));
+		AffineTransform modelTransform = new AffineTransform();
+		modelTransform.scale(scale, scale);
+		modelTransform.translate(-bounds.x, -bounds.y);
+		g2d.setTransform(modelTransform);
 		DiagramPanel.prepareGraphics(g2d);
 
 		// Render the model.
@@ -124,9 +142,9 @@ public class ExportToImageAction extends AbstractAction {
 		this.model.getRelations().forEach(r -> r.setSelected(selectedRelations.contains(r)));
 		LolcatAction.getInstance().setLolcatEnabled(lolcat); // revert previous lolcat mode
 
-		// Revert back to the normal image space, and render a watermark.
+		// Revert to the normal image space, and render a watermark.
 		g2d.setTransform(originalTransform);
-		g2d.setColor(Color.LIGHT_GRAY);
+		g2d.setColor(Color.decode("#e8e8e8"));
 		g2d.setFont(g2d.getFont().deriveFont(10.0f));
 		g2d.drawString("Created by EntityRelationMappingEditor", 0, outputImage.getHeight() - 3);
 		return outputImage;

@@ -1,29 +1,27 @@
 package nl.andrewlalis.erme.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
-import nl.andrewlalis.erme.view.OrderableListPanel;
 import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 import nl.andrewlalis.erme.view.view_models.ViewModel;
 
 import java.awt.*;
-import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * This model contains all the information about a single mapping diagram,
  * including each mapped table and the links between them.
  */
-public class MappingModel implements Serializable, Viewable {
+public class MappingModel implements Viewable {
 	@Getter
 	private final Set<Relation> relations;
 
-	private transient Set<ModelChangeListener> changeListeners;
-
-	private final static long serialVersionUID = 6153776381873250304L;
+	private transient final Set<ModelChangeListener> changeListeners;
 
 	public MappingModel() {
 		this.relations = new HashSet<>();
@@ -42,10 +40,20 @@ public class MappingModel implements Serializable, Viewable {
 		}
 	}
 
+	/**
+	 * Gets the list of relations which are currently selected.
+	 * @return The list of relations which are selected.
+	 */
 	public List<Relation> getSelectedRelations() {
 		return this.relations.stream().filter(Relation::isSelected).collect(Collectors.toList());
 	}
 
+	/**
+	 * Finds an attribute in this model, or returns null otherwise.
+	 * @param relationName The name of the relation the attribute is in.
+	 * @param attributeName The name of the attribute.
+	 * @return The attribute which was found, or null if none was found.
+	 */
 	public Attribute findAttribute(String relationName, String attributeName) {
 		for (Relation r : this.getRelations()) {
 			if (!r.getName().equals(relationName)) continue;
@@ -58,6 +66,11 @@ public class MappingModel implements Serializable, Viewable {
 		return null;
 	}
 
+	/**
+	 * Removes all attributes from any relation in the model which reference the
+	 * given attribute.
+	 * @param referenced The attribute to remove references from.
+	 */
 	public void removeAllReferencingAttributes(Attribute referenced) {
 		for (Relation r : this.getRelations()) {
 			Set<Attribute> removalSet = new HashSet<>();
@@ -73,6 +86,10 @@ public class MappingModel implements Serializable, Viewable {
 		}
 	}
 
+	/**
+	 * Gets the bounding rectangle around all relations of the model.
+	 * @return The bounding rectangle around all relations in this model.
+	 */
 	public Rectangle getRelationBounds() {
 		if (this.getRelations().isEmpty()) {
 			return new Rectangle(0, 0, 0, 0);
@@ -90,14 +107,20 @@ public class MappingModel implements Serializable, Viewable {
 		return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 	}
 
+	/**
+	 * Adds a listener to this model, which will be notified of changes to the
+	 * model.
+	 * @param listener The listener to add.
+	 */
 	public void addChangeListener(ModelChangeListener listener) {
-		if (this.changeListeners == null) {
-			this.changeListeners = new HashSet<>();
-		}
 		this.changeListeners.add(listener);
 		listener.onModelChanged();
 	}
 
+	/**
+	 * Fires an all-purpose event which notifies all listeners that the model
+	 * has changed.
+	 */
 	public final void fireChangedEvent() {
 		this.changeListeners.forEach(ModelChangeListener::onModelChanged);
 	}
@@ -145,5 +168,107 @@ public class MappingModel implements Serializable, Viewable {
 		MappingModel c = new MappingModel();
 		this.getRelations().forEach(r -> c.addRelation(r.copy(c)));
 		return c;
+	}
+
+	public ObjectNode toJson(ObjectMapper mapper) {
+		ObjectNode node = mapper.createObjectNode();
+		ArrayNode relationsArray = node.withArray("relations");
+		for (Relation r : this.relations) {
+			ObjectNode relationNode = mapper.createObjectNode()
+					.put("name", r.getName());
+			ObjectNode positionNode = mapper.createObjectNode()
+					.put("x", r.getPosition().x)
+					.put("y", r.getPosition().y);
+			relationNode.set("position", positionNode);
+			ArrayNode attributesArray = relationNode.withArray("attributes");
+			for (Attribute a : r.getAttributes()) {
+				ObjectNode attributeNode = mapper.createObjectNode()
+						.put("name", a.getName())
+						.put("type", a.getType().name());
+				if (a instanceof ForeignKeyAttribute) {
+					ForeignKeyAttribute fk = (ForeignKeyAttribute) a;
+					ObjectNode referenceNode = mapper.createObjectNode()
+							.put("relation", fk.getReference().getRelation().getName())
+							.put("attribute", fk.getReference().getName());
+					attributeNode.set("references", referenceNode);
+				}
+				attributesArray.add(attributeNode);
+			}
+			relationsArray.add(relationNode);
+		}
+		return node;
+	}
+
+	public static MappingModel fromJson(ObjectNode node) {
+		MappingModel model = new MappingModel();
+		for (JsonNode relationNodeRaw : node.withArray("relations")) {
+			if (!relationNodeRaw.isObject()) throw new IllegalArgumentException();
+			ObjectNode relationNode = (ObjectNode) relationNodeRaw;
+			String name = relationNode.get("name").asText();
+			int x = relationNode.get("position").get("x").asInt();
+			int y = relationNode.get("position").get("y").asInt();
+			Point position = new Point(x, y);
+			Relation relation = new Relation(model, position, name);
+			for (JsonNode attributeNodeRaw : relationNode.withArray("attributes")) {
+				if (!attributeNodeRaw.isObject()) throw new IllegalArgumentException();
+				ObjectNode attributeNode = (ObjectNode) attributeNodeRaw;
+				String attributeName = attributeNode.get("name").asText();
+				AttributeType type = AttributeType.valueOf(attributeNode.get("type").asText().toUpperCase());
+				Attribute attribute = new Attribute(relation, type, attributeName);
+				relation.addAttribute(attribute);
+			}
+			model.addRelation(relation);
+		}
+		addForeignKeys(model, node);
+		return model;
+	}
+
+	private static void addForeignKeys(MappingModel model, ObjectNode node) {
+		Map<Attribute, ObjectNode> references = buildReferenceMap(model, node);
+		while (!references.isEmpty()) {
+			boolean workDone = false;
+			for (Map.Entry<Attribute, ObjectNode> entry : references.entrySet()) {
+				Attribute attribute = entry.getKey();
+				String referencedName = entry.getValue().get("attribute").asText();
+				String referencedRelation = entry.getValue().get("relation").asText();
+				Attribute referencedAttribute = model.findAttribute(referencedRelation, referencedName);
+				if (referencedAttribute == null) throw new IllegalArgumentException("Foreign key referenced unknown attribute.");
+				if (!references.containsKey(referencedAttribute)) {
+					ForeignKeyAttribute fk = new ForeignKeyAttribute(attribute.getRelation(), attribute.getType(), attribute.getName(), referencedAttribute);
+					attribute.getRelation().removeAttribute(attribute);
+					attribute.getRelation().addAttribute(fk);
+					references.remove(attribute);
+					workDone = true;
+				}
+			}
+			if (!workDone) {
+				throw new IllegalArgumentException("Invalid foreign key structure. Possible cyclic references.");
+			}
+		}
+	}
+
+	/**
+	 * Builds a map that contains the set of foreign key references, indexed by
+	 * the primitive attribute that is referencing another.
+	 * @param model The model to lookup attributes from.
+	 * @param node The raw JSON data for the model.
+	 * @return A map containing foreign key references, to be used to build a
+	 * complete model with foreign key attributes.
+	 */
+	private static Map<Attribute, ObjectNode> buildReferenceMap(MappingModel model, ObjectNode node) {
+		Map<Attribute, ObjectNode> references = new HashMap<>();
+		for (JsonNode r : node.withArray("relations")) {
+			for (JsonNode a : r.withArray("attributes")) {
+				if (a.has("references") && a.get("references").isObject()) {
+					ObjectNode referenceNode = (ObjectNode) a.get("references");
+					String attributeName = a.get("name").asText();
+					String relationName = r.get("name").asText();
+					Attribute attribute = model.findAttribute(relationName, attributeName);
+					if (attribute == null) throw new IllegalArgumentException("Mapping model is not complete. Missing attribute " + attributeName + " in relation " + relationName + ".");
+					references.put(attribute, referenceNode);
+				}
+			}
+		}
+		return references;
 	}
 }

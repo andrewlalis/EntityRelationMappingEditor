@@ -5,7 +5,6 @@ import nl.andrewlalis.erme.view.view_models.RelationViewModel;
 import nl.andrewlalis.erme.view.view_models.ViewModel;
 
 import java.awt.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
  * Represents a single "relation" or table in the diagram.
  */
 @Getter
-public class Relation implements Serializable, Viewable, Comparable<Relation> {
+public class Relation implements Viewable, Comparable<Relation> {
 	private final MappingModel model;
 	private Point position;
 	private String name;
@@ -24,11 +23,15 @@ public class Relation implements Serializable, Viewable, Comparable<Relation> {
 	private transient boolean selected;
 	private transient RelationViewModel viewModel;
 
-	public Relation(MappingModel model, Point position, String name) {
+	public Relation(MappingModel model, Point position, String name, List<Attribute> attributes) {
 		this.model = model;
 		this.position = position;
 		this.name = name;
-		this.attributes = new ArrayList<>();
+		this.attributes = attributes;
+	}
+
+	public Relation(MappingModel model, Point position, String name) {
+		this(model, position, name, new ArrayList<>());
 	}
 
 	public void setPosition(Point position) {

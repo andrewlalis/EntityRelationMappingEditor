@@ -1,6 +1,11 @@
 # Entity-Relation Mapping Editor
 A simple UI for editing entity-relation mapping diagrams.
 
+## Usage
+This program is distributed as an executable **jar** file. You can find the latest release [here](https://github.com/andrewlalis/EntityRelationMappingEditor/releases). You will need Java installed on your computer (version 8 or higher). [You can install an OpenJDK version of Java here.](https://adoptium.net/)
+
+Simply double-click on the jar file, or execute `java -jar <jar file>` from the command line (where `<jar file>` is replaced with the path to your actual jar file).
+
 ![window screenshot](https://raw.githubusercontent.com/andrewlalis/EntityRelationMappingEditor/main/design/main_interface.PNG)
 
 ## How to Use
