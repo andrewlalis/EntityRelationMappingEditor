@@ -15,6 +15,7 @@ import java.util.Set;
 /**
  * A panel to be used in a popup that has a OrderableListModel implemented. Implements ModelChangeListener to be able
  * to update the list of relations when new ones are added or ones are removed.
+ * TODO: Refactor this to not use static singleton instance.
  */
 public class OrderableListPanel extends JPanel implements ModelChangeListener {
 	private static OrderableListPanel instance;

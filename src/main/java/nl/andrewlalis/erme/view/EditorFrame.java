@@ -14,8 +14,9 @@ import java.io.InputStream;
 public class EditorFrame extends JFrame {
 	public EditorFrame() {
 		super("ER-Mapping Editor");
-		this.setContentPane(new DiagramPanel(new MappingModel()));
-		this.setJMenuBar(new EditorMenuBar());
+		DiagramPanel diagramPanel = new DiagramPanel(new MappingModel());
+		this.setContentPane(diagramPanel);
+		this.setJMenuBar(new EditorMenuBar(diagramPanel));
 		try {
 			InputStream is = getClass().getClassLoader().getResourceAsStream("icon.png");
 			if (is == null) {
@@ -26,7 +27,7 @@ public class EditorFrame extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		this.setMinimumSize(new Dimension(400, 400));
+		this.setMinimumSize(new Dimension(300, 300));
 		this.setPreferredSize(new Dimension(800, 800));
 		this.pack();
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

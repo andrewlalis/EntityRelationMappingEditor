@@ -11,11 +11,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class DiagramMouseListener extends MouseAdapter {
-	private final MappingModel model;
+	private final DiagramPanel diagramPanel;
 	private Point mouseDragStart;
 
-	public DiagramMouseListener(MappingModel model) {
-		this.model = model;
+	public DiagramMouseListener(DiagramPanel diagramPanel) {
+		this.diagramPanel = diagramPanel;
 	}
 
 	/**
@@ -38,13 +38,14 @@ public class DiagramMouseListener extends MouseAdapter {
 
 		final boolean isCtrlDown = (e.getModifiers() & ActionEvent.CTRL_MASK) == ActionEvent.CTRL_MASK;
 		final boolean isShiftDown = (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK;
+		MappingModel model = this.diagramPanel.getModel();
 
 		if (!isShiftDown && !isCtrlDown) {// A simple click anywhere should reset selection.
-			this.model.getRelations().forEach(r -> r.setSelected(false));
+			model.getRelations().forEach(r -> r.setSelected(false));
 		}
 
 		if (!isShiftDown) {// If the user clicked or CTRL+clicked, try and select the relation they clicked on.
-			for (Relation r : this.model.getRelations()) {
+			for (Relation r : model.getRelations()) {
 				if (r.getViewModel().getBounds(g).contains(modelX, modelY)) {
 					r.setSelected(!r.isSelected());
 					break;
@@ -54,11 +55,12 @@ public class DiagramMouseListener extends MouseAdapter {
 
 		// If the user right-clicked, show a popup menu.
 		if (e.getButton() == MouseEvent.BUTTON3) {
-			DiagramPopupMenu popupMenu = new DiagramPopupMenu(this.model, e);
+			model.setLastInteractionPoint(e.getPoint());
+			DiagramPopupMenu popupMenu = new DiagramPopupMenu(this.diagramPanel);
 			popupMenu.show(panel, e.getX(), e.getY());
 		}
 
-		this.model.fireChangedEvent();
+		model.fireChangedEvent();
 	}
 
 	@Override
@@ -72,13 +74,14 @@ public class DiagramMouseListener extends MouseAdapter {
 		final int dy = this.mouseDragStart.y - e.getY();
 		final boolean isShiftDown = (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK;
 		boolean changed = false;
+		MappingModel model = this.diagramPanel.getModel();
 
 		if (isShiftDown) {
-			final DiagramPanel panel = (DiagramPanel) e.getSource();
-			panel.translate(-dx, -dy);
-			panel.repaint();
+			System.out.println(e);
+			this.diagramPanel.translate(-dx, -dy);
+			this.diagramPanel.repaint();
 		} else {
-			for (Relation r : this.model.getRelations()) {
+			for (Relation r : model.getRelations()) {
 				if (r.isSelected()) {
 					r.setPosition(new Point(r.getPosition().x - dx, r.getPosition().y - dy));
 					changed = true;
@@ -87,7 +90,7 @@ public class DiagramMouseListener extends MouseAdapter {
 		}
 
 		if (changed) {
-			this.model.fireChangedEvent();
+			model.fireChangedEvent();
 		}
 		this.mouseDragStart = e.getPoint();
 	}

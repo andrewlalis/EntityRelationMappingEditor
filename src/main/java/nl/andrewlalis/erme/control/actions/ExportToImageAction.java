@@ -1,6 +1,5 @@
 package nl.andrewlalis.erme.control.actions;
 
-import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
@@ -20,33 +19,21 @@ import java.io.IOException;
 import java.util.List;
 import java.util.prefs.Preferences;
 
-public class ExportToImageAction extends AbstractAction {
+public class ExportToImageAction extends DiagramPanelAction {
 	private static final String LAST_EXPORT_LOCATION_KEY = "lastExportLocation";
 
-	private static ExportToImageAction instance;
-	public static ExportToImageAction getInstance() {
-		if (instance == null) {
-			instance = new ExportToImageAction();
-		}
-		return instance;
-	}
-
-	@Setter
-	private MappingModel model;
-	@Setter
-	private DiagramPanel diagramPanel;
-
-	public ExportToImageAction() {
-		super("Export to Image");
+	public ExportToImageAction(DiagramPanel diagramPanel) {
+		super("Export to Image", diagramPanel);
 		this.putValue(Action.SHORT_DESCRIPTION, "Export the current diagram to an image.");
 		this.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (this.model.getRelations().isEmpty()) {
+		DiagramPanel dp = getDiagramPanel();
+		if (dp.getModel().getRelations().isEmpty()) {
 			JOptionPane.showMessageDialog(
-					this.diagramPanel,
+					dp,
 					"Model is empty. Add some relations before exporting to an image.",
 					"Model Empty",
 					JOptionPane.WARNING_MESSAGE
@@ -62,11 +49,11 @@ public class ExportToImageAction extends AbstractAction {
 		if (path != null) {
 			fileChooser.setSelectedFile(new File(path));
 		}
-		int choice = fileChooser.showSaveDialog(this.diagramPanel);
+		int choice = fileChooser.showSaveDialog(dp);
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File chosenFile = fileChooser.getSelectedFile();
 			if (chosenFile == null || chosenFile.isDirectory()) {
-				JOptionPane.showMessageDialog(fileChooser, "The selected file cannot be written to.", "Invalid File", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(dp, "The selected file cannot be written to.", "Invalid File", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 			int i = chosenFile.getName().lastIndexOf('.');
@@ -76,13 +63,13 @@ public class ExportToImageAction extends AbstractAction {
 			} else {
 				chosenFile = new File(chosenFile.getParent(), chosenFile.getName() + '.' + extension);
 			}
-			String input = JOptionPane.showInputDialog(this.diagramPanel, "Choose a scale for the image.", "3.0");
+			String input = JOptionPane.showInputDialog(dp, "Choose a scale for the image.", "3.0");
 			float scale;
 			try {
 				scale = Float.parseFloat(input);
 				if (scale <= 0.0f || scale > 64.0f) throw new IllegalArgumentException();
 			} catch (Exception ex) {
-				JOptionPane.showMessageDialog(this.diagramPanel, "Invalid scale value. Should be a positive number less than 64.", "Invalid Scale", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(dp, "Invalid scale value. Should be a positive number less than 64.", "Invalid Scale", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 			try {
@@ -92,7 +79,7 @@ public class ExportToImageAction extends AbstractAction {
 				ImageIO.write(render, extension, chosenFile);
 				prefs.put(LAST_EXPORT_LOCATION_KEY, chosenFile.getAbsolutePath());
 				JOptionPane.showMessageDialog(
-						this.diagramPanel,
+						dp,
 						"Image export completed in " + String.format("%.4f", durationSeconds) + " seconds.\n" +
 								"Resolution: " + render.getWidth() + "x" + render.getHeight(),
 						"Image Export Complete",
@@ -111,11 +98,12 @@ public class ExportToImageAction extends AbstractAction {
 	 * @return The image which was rendered.
 	 */
 	private BufferedImage renderModel(float scale) {
+		MappingModel model = getDiagramPanel().getModel();
 		// Prepare a tiny sample image that we can use to determine the bounds of the model in a graphics context.
 		BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = bufferedImage.createGraphics();
 		DiagramPanel.prepareGraphics(g2d);
-		final Rectangle bounds = this.model.getViewModel().getBounds(g2d);
+		final Rectangle bounds = model.getViewModel().getBounds(g2d);
 		bounds.width *= scale;
 		bounds.height *= scale;
 
@@ -134,13 +122,13 @@ public class ExportToImageAction extends AbstractAction {
 		DiagramPanel.prepareGraphics(g2d);
 
 		// Render the model.
-		boolean lolcat = LolcatAction.getInstance().isLolcatEnabled(); // save previous lolcat mode
-		LolcatAction.getInstance().setLolcatEnabled(false);
-		List<Relation> selectedRelations = this.model.getSelectedRelations();
-		this.model.getSelectedRelations().forEach(r -> r.setSelected(false));
-		new MappingModelViewModel(this.model).draw(g2d);
-		this.model.getRelations().forEach(r -> r.setSelected(selectedRelations.contains(r)));
-		LolcatAction.getInstance().setLolcatEnabled(lolcat); // revert previous lolcat mode
+		boolean lolcat = model.isLolcatEnabled(); // save previous lolcat mode
+		model.setLolcatEnabled(false);
+		List<Relation> selectedRelations = model.getSelectedRelations();
+		model.getSelectedRelations().forEach(r -> r.setSelected(false));
+		new MappingModelViewModel(model).draw(g2d);
+		model.getRelations().forEach(r -> r.setSelected(selectedRelations.contains(r)));
+		model.setLolcatEnabled(lolcat); // revert previous lolcat mode
 
 		// Revert to the normal image space, and render a watermark.
 		g2d.setTransform(originalTransform);

@@ -1,8 +1,7 @@
 package nl.andrewlalis.erme.control.actions.edits;
 
-import lombok.Setter;
+import nl.andrewlalis.erme.control.actions.DiagramPanelAction;
 import nl.andrewlalis.erme.model.Attribute;
-import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
 
@@ -12,33 +11,19 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
-public class RemoveAttributeAction extends AbstractAction {
-	private static RemoveAttributeAction instance;
-
-	public static RemoveAttributeAction getInstance() {
-		if (instance == null) {
-			instance = new RemoveAttributeAction();
-		}
-		return instance;
-	}
-
-	@Setter
-	private MappingModel model;
-	@Setter
-	private DiagramPanel diagramPanel;
-
-	public RemoveAttributeAction() {
-		super("Remove Attribute");
+public class RemoveAttributeAction extends DiagramPanelAction {
+	public RemoveAttributeAction(DiagramPanel diagramPanel) {
+		super("Remove Attribute", diagramPanel);
 		this.putValue(SHORT_DESCRIPTION, "Remove an attribute from a relation.");
 		this.putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		List<Relation> selectedRelations = this.model.getSelectedRelations();
+		List<Relation> selectedRelations = getDiagramPanel().getModel().getSelectedRelations();
 		if (selectedRelations.size() != 1 || selectedRelations.get(0).getAttributes().isEmpty()) {
 			JOptionPane.showMessageDialog(
-					this.diagramPanel,
+					getDiagramPanel(),
 					"A single relation with at least one attribute must be selected to remove an attribute.",
 					"Single Relation With Attribute Required",
 					JOptionPane.WARNING_MESSAGE
@@ -47,7 +32,7 @@ public class RemoveAttributeAction extends AbstractAction {
 		}
 		Relation r = selectedRelations.get(0);
 		Attribute attribute = (Attribute) JOptionPane.showInputDialog(
-				this.diagramPanel,
+				getDiagramPanel(),
 				"Select the attribute to remove.",
 				"Select Attribute",
 				JOptionPane.PLAIN_MESSAGE,

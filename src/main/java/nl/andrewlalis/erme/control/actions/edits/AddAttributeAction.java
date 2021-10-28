@@ -1,6 +1,6 @@
 package nl.andrewlalis.erme.control.actions.edits;
 
-import lombok.Setter;
+import nl.andrewlalis.erme.control.actions.DiagramPanelAction;
 import nl.andrewlalis.erme.model.*;
 import nl.andrewlalis.erme.view.DiagramPanel;
 
@@ -10,36 +10,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
-public class AddAttributeAction extends AbstractAction {
-	private static AddAttributeAction instance;
-
-	public static AddAttributeAction getInstance() {
-		if (instance == null) {
-			instance = new AddAttributeAction();
-		}
-		return instance;
-	}
-
-	@Setter
-	private MappingModel model;
-	@Setter
-	private DiagramPanel diagramPanel;
-
-	public AddAttributeAction() {
-		super("Add Attribute");
+public class AddAttributeAction extends DiagramPanelAction {
+	public AddAttributeAction(DiagramPanel diagramPanel) {
+		super("Add Attribute", diagramPanel);
 		this.putValue(SHORT_DESCRIPTION, "Add an attribute to the selected relation.");
 		this.putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		List<Relation> selectedRelations = this.model.getSelectedRelations();
+		DiagramPanel dp = getDiagramPanel();
+		MappingModel model = dp.getModel();
+		List<Relation> selectedRelations = model.getSelectedRelations();
 		if (selectedRelations.size() != 1) {
 			JOptionPane.showMessageDialog(
-					this.diagramPanel,
+					dp,
 					"A single relation must be selected to add an attribute.",
 					"Single Relation Required",
 					JOptionPane.WARNING_MESSAGE
@@ -48,11 +35,10 @@ public class AddAttributeAction extends AbstractAction {
 		}
 		Relation r = selectedRelations.get(0);
 		Attribute createdAttribute;
-		Component source = this.diagramPanel;
-		String name = JOptionPane.showInputDialog(source, "Enter the name of the attribute.", "Attribute Name", JOptionPane.PLAIN_MESSAGE);
+		String name = JOptionPane.showInputDialog(dp, "Enter the name of the attribute.", "Attribute Name", JOptionPane.PLAIN_MESSAGE);
 		if (name == null) return;
 		Integer index = (Integer) JOptionPane.showInputDialog(
-				source,
+				dp,
 				"Select the index to insert this attribute at.",
 				"Attribute Index",
 				JOptionPane.PLAIN_MESSAGE,
@@ -62,7 +48,7 @@ public class AddAttributeAction extends AbstractAction {
 		);
 		if (index == null) return;
 		AttributeType type = (AttributeType) JOptionPane.showInputDialog(
-				source,
+				dp,
 				"Select the type this attribute is.",
 				"Attribute Type",
 				JOptionPane.PLAIN_MESSAGE,
@@ -72,7 +58,7 @@ public class AddAttributeAction extends AbstractAction {
 		);
 		if (type == null) return;
 		boolean shouldUseForeignKey = ((String) JOptionPane.showInputDialog(
-				source,
+				dp,
 				"Is this attribute a foreign key?",
 				"Foreign Key",
 				JOptionPane.PLAIN_MESSAGE,
@@ -81,27 +67,27 @@ public class AddAttributeAction extends AbstractAction {
 				"No"
 		)).equalsIgnoreCase("yes");
 		if (shouldUseForeignKey) {
-			if (this.model.getRelations().size() < 2) {
-				JOptionPane.showMessageDialog(source, "There should be at least 2 relations present in the model.", "Not Enough Relations", JOptionPane.WARNING_MESSAGE);
+			if (model.getRelations().size() < 2) {
+				JOptionPane.showMessageDialog(dp, "There should be at least 2 relations present in the model.", "Not Enough Relations", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 			Relation fkRelation = (Relation) JOptionPane.showInputDialog(
-					source,
+					dp,
 					"Select the relation that this foreign key references.",
 					"Foreign Key Relation Reference",
 					JOptionPane.PLAIN_MESSAGE,
 					null,
-					this.model.getRelations().toArray(new Relation[0]),
-					this.model.getRelations().stream().findFirst().orElse(null)
+					model.getRelations().toArray(new Relation[0]),
+					model.getRelations().stream().findFirst().orElse(null)
 			);
 			if (fkRelation == null) return;
 			List<Attribute> eligibleAttributes = fkRelation.getAttributes();
 			if (eligibleAttributes.isEmpty()) {
-				JOptionPane.showMessageDialog(source, "There are no referencable attributes in the selected relation.", "No Referencable Attributes", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(dp, "There are no referencable attributes in the selected relation.", "No Referencable Attributes", JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 			Attribute fkAttribute = (Attribute) JOptionPane.showInputDialog(
-					source,
+					dp,
 					"Select the attribute that this foreign key references.",
 					"Foreign Key Attribute Reference",
 					JOptionPane.PLAIN_MESSAGE,

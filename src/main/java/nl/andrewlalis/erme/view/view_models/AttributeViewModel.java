@@ -1,6 +1,5 @@
 package nl.andrewlalis.erme.view.view_models;
 
-import nl.andrewlalis.erme.control.actions.LolcatAction;
 import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.AttributeType;
 import nl.andrewlalis.erme.model.ForeignKeyAttribute;
@@ -46,7 +45,7 @@ public class AttributeViewModel implements ViewModel {
 	}
 
 	private Color getBackgroundColor(int x, int y, Graphics2D g) {
-		if (!LolcatAction.getInstance().isLolcatEnabled()) return BACKGROUND_COLOR;
+		if (!attribute.getRelation().getModel().isLolcatEnabled()) return BACKGROUND_COLOR;
 		Point offset = g.getClipBounds().getLocation();
 		g.translate(offset.x, offset.y);
 		Dimension viewportSize = g.getClipBounds().getSize();

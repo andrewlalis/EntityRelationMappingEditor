@@ -1,11 +1,6 @@
 package nl.andrewlalis.erme.view;
 
 import lombok.Getter;
-import nl.andrewlalis.erme.control.actions.*;
-import nl.andrewlalis.erme.control.actions.edits.AddAttributeAction;
-import nl.andrewlalis.erme.control.actions.edits.AddRelationAction;
-import nl.andrewlalis.erme.control.actions.edits.RemoveAttributeAction;
-import nl.andrewlalis.erme.control.actions.edits.RemoveRelationAction;
 import nl.andrewlalis.erme.control.diagram.DiagramMouseListener;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.ModelChangeListener;
@@ -21,6 +16,10 @@ import java.awt.event.MouseMotionListener;
  * The main panel in which the ER Mapping diagram is displayed.
  */
 public class DiagramPanel extends JPanel implements ModelChangeListener {
+	/**
+	 * The model for the application. This is the main location from which to
+	 * obtain the model for use in actions.
+	 */
 	@Getter
 	private MappingModel model;
 
@@ -60,10 +59,10 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		for (MouseMotionListener listener : this.getMouseMotionListeners()) {
 			this.removeMouseMotionListener(listener);
 		}
-		DiagramMouseListener listener = new DiagramMouseListener(newModel);
+		DiagramMouseListener listener = new DiagramMouseListener(this);
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);
-		this.updateActionModels();
+		this.updateActionModels(); // TODO: remove this once OrderableListPanel is cleaned up.
 		newModel.addChangeListener(OrderableListPanel.getInstance());
 		this.centerModel();
 		this.repaint();
@@ -79,6 +78,9 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 		this.panningTranslation.y = 0;
 	}
 
+	/**
+	 * Centers the model in the panel, by adjusting the panning translation.
+	 */
 	public void centerModel() {
 		if (this.getGraphics() == null) {
 			return;
@@ -120,30 +122,7 @@ public class DiagramPanel extends JPanel implements ModelChangeListener {
 	 * TODO: Clean this up somehow!
 	 */
 	private void updateActionModels() {
-		NewModelAction.getInstance().setDiagramPanel(this);
-		SaveAction.getInstance().setModel(this.model);
-		LoadAction.getInstance().setDiagramPanel(this);
-		ExportToImageAction.getInstance().setModel(this.model);
-		ExportToImageAction.getInstance().setDiagramPanel(this);
-		AddRelationAction.getInstance().setModel(this.model);
-		AddRelationAction.getInstance().setDiagramPanel(this);
-		RemoveRelationAction.getInstance().setModel(this.model);
-		RemoveRelationAction.getInstance().setDiagramPanel(this);
-		AddAttributeAction.getInstance().setModel(this.model);
-		AddAttributeAction.getInstance().setDiagramPanel(this);
-		RemoveAttributeAction.getInstance().setModel(this.model);
-		RemoveAttributeAction.getInstance().setDiagramPanel(this);
-		LoadSampleModelAction.getInstance().setDiagramPanel(this);
-		LolcatAction.getInstance().setDiagramPanel(this);
-		VisualizeReferencesAction.getInstance().setDiagramPanel(this);
-    	AutoPositionAction.getInstance().setDiagramPanel(this);
-		AutoPositionAction.getInstance().setModel(this.model);
 		OrderableListPanel.getInstance().setModel(this.model);
-    	AboutAction.getInstance().setDiagramPanel(this);
-		ExitAction.getInstance().setDiagramPanel(this);
-		InstructionsAction.getInstance().setDiagramPanel(this);
-		MappingAlgorithmHelpAction.getInstance().setDiagramPanel(this);
-		SaveAction.getInstance().setDiagramPanel(this);
 	}
 
 	public static void prepareGraphics(Graphics2D g) {

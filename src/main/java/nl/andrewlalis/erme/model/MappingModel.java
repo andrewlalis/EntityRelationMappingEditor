@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
+import lombok.Setter;
 import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 import nl.andrewlalis.erme.view.view_models.ViewModel;
 
@@ -22,6 +23,16 @@ public class MappingModel implements Viewable {
 	private final Set<Relation> relations;
 
 	private transient final Set<ModelChangeListener> changeListeners;
+
+	@Getter
+	@Setter
+	private transient Point lastInteractionPoint = null;
+	@Getter
+	@Setter
+	private transient boolean lolcatEnabled = false;
+	@Getter
+	@Setter
+	private transient boolean referenceVisualizationEnabled = false;
 
 	public MappingModel() {
 		this.relations = new HashSet<>();

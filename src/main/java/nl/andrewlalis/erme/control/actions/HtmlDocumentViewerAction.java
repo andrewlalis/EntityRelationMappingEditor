@@ -1,6 +1,5 @@
 package nl.andrewlalis.erme.control.actions;
 
-import lombok.Setter;
 import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
@@ -16,27 +15,24 @@ import java.net.URISyntaxException;
 /**
  * An action which, when performed, opens a view that displays an HTML document.
  */
-public abstract class HtmlDocumentViewerAction extends AbstractAction {
+public abstract class HtmlDocumentViewerAction extends DiagramPanelAction {
 	private final String resourceFileName;
 	private final Dialog.ModalityType modalityType;
 
-	public HtmlDocumentViewerAction(String name, String resourceFileName) {
-		this(name, resourceFileName, Dialog.ModalityType.APPLICATION_MODAL);
+	public HtmlDocumentViewerAction(String name, String resourceFileName, DiagramPanel diagramPanel) {
+		this(name, resourceFileName, Dialog.ModalityType.APPLICATION_MODAL, diagramPanel);
 	}
 
-	public HtmlDocumentViewerAction(String name, String resourceFileName, Dialog.ModalityType modalityType) {
-		super(name);
+	public HtmlDocumentViewerAction(String name, String resourceFileName, Dialog.ModalityType modalityType, DiagramPanel diagramPanel) {
+		super(name, diagramPanel);
 		this.resourceFileName = resourceFileName;
 		this.modalityType = modalityType;
 	}
 
-	@Setter
-	private DiagramPanel diagramPanel;
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JDialog dialog = new JDialog(
-				SwingUtilities.getWindowAncestor(this.diagramPanel),
+				SwingUtilities.getWindowAncestor(getDiagramPanel()),
 				(String) this.getValue(NAME),
 				this.modalityType
 		);
@@ -63,7 +59,7 @@ public abstract class HtmlDocumentViewerAction extends AbstractAction {
 		} catch (IOException ex) {
 			ex.printStackTrace();
 			JOptionPane.showMessageDialog(
-					this.diagramPanel,
+					getDiagramPanel(),
 					"An error occured:\n" + ex.getMessage(),
 					"Error",
 					JOptionPane.ERROR_MESSAGE
@@ -77,7 +73,7 @@ public abstract class HtmlDocumentViewerAction extends AbstractAction {
 		dialog.setMaximumSize(new Dimension(600, 800));
 		dialog.setPreferredSize(new Dimension(600, 800));
 		dialog.pack();
-		dialog.setLocationRelativeTo(this.diagramPanel);
+		dialog.setLocationRelativeTo(getDiagramPanel());
 		dialog.setVisible(true);
 	}
 

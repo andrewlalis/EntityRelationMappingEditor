@@ -1,28 +1,14 @@
 package nl.andrewlalis.erme.control.actions;
 
-import lombok.Setter;
 import nl.andrewlalis.erme.model.*;
 import nl.andrewlalis.erme.view.DiagramPanel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class LoadSampleModelAction extends AbstractAction {
-	private static LoadSampleModelAction instance;
-
-	public static LoadSampleModelAction getInstance() {
-		if (instance == null) {
-			instance = new LoadSampleModelAction();
-		}
-		return instance;
-	}
-
-	@Setter
-	private DiagramPanel diagramPanel;
-
-	public LoadSampleModelAction() {
-		super("Load Sample Model");
+public class LoadSampleModelAction extends DiagramPanelAction {
+	public LoadSampleModelAction(DiagramPanel diagramPanel) {
+		super("Load Sample Model", diagramPanel);
 		this.putValue(SHORT_DESCRIPTION, "Loads a sample ER-mapping model.");
 	}
 
@@ -38,6 +24,6 @@ public class LoadSampleModelAction extends AbstractAction {
 		r1.addAttribute(new Attribute(r1, AttributeType.PLAIN, "purchasedAt"));
 		r1.addAttribute(new ForeignKeyAttribute(r1, AttributeType.PLAIN, "typeName", "AirplaneType", "name"));
 		model.addRelation(r1);
-		this.diagramPanel.setModel(model);
+		getDiagramPanel().setModel(model);
 	}
 }

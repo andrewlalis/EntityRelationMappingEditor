@@ -3,7 +3,6 @@ package nl.andrewlalis.erme.view;
 import nl.andrewlalis.erme.control.actions.*;
 import nl.andrewlalis.erme.control.actions.edits.AddAttributeAction;
 import nl.andrewlalis.erme.control.actions.edits.AddRelationAction;
-import nl.andrewlalis.erme.control.actions.edits.RemoveAttributeAction;
 import nl.andrewlalis.erme.control.actions.edits.RemoveRelationAction;
 
 import javax.swing.*;
@@ -12,51 +11,47 @@ import javax.swing.*;
  * The menu bar that's visible atop the application.
  */
 public class EditorMenuBar extends JMenuBar {
-	public EditorMenuBar() {
-		this.add(this.buildFileMenu());
-		this.add(this.buildEditMenu());
-		this.add(this.buildViewMenu());
-		this.add(this.buildHelpMenu());
+	public EditorMenuBar(DiagramPanel diagramPanel) {
+		this.add(this.buildFileMenu(diagramPanel));
+		this.add(this.buildEditMenu(diagramPanel));
+		this.add(this.buildViewMenu(diagramPanel));
+		this.add(this.buildHelpMenu(diagramPanel));
 	}
 
-	private JMenu buildFileMenu() {
+	private JMenu buildFileMenu(DiagramPanel diagramPanel) {
 		JMenu menu = new JMenu("File");
-		menu.add(NewModelAction.getInstance());
-		menu.add(SaveAction.getInstance());
-		menu.add(LoadAction.getInstance());
+		menu.add(new NewModelAction(diagramPanel));
+		menu.add(new SaveAction(diagramPanel));
+		menu.add(new LoadAction(diagramPanel));
 		menu.addSeparator();
-		menu.add(ExportToImageAction.getInstance());
+		menu.add(new ExportToImageAction(diagramPanel));
 		menu.addSeparator();
-		menu.add(ExitAction.getInstance());
+		menu.add(new ExitAction(diagramPanel));
 		return menu;
 	}
 
-	private JMenu buildEditMenu() {
+	private JMenu buildEditMenu(DiagramPanel diagramPanel) {
 		JMenu menu = new JMenu("Edit");
-		menu.add(AddRelationAction.getInstance());
-		menu.add(RemoveRelationAction.getInstance());
-		menu.add(AddAttributeAction.getInstance());
-		menu.add(RemoveAttributeAction.getInstance());
-		menu.add(AutoPositionAction.getInstance());
-		menu.addSeparator();
-		menu.add(UndoAction.getInstance());
-		menu.add(RedoAction.getInstance());
+		menu.add(new AddRelationAction(diagramPanel));
+		menu.add(new RemoveRelationAction(diagramPanel));
+		menu.add(new AddAttributeAction(diagramPanel));
+		menu.add(new RemoveRelationAction(diagramPanel));
+		menu.add(new AutoPositionAction(diagramPanel));
 		return menu;
 	}
 
-	private JMenu buildViewMenu() {
+	private JMenu buildViewMenu(DiagramPanel diagramPanel) {
 		JMenu menu = new JMenu("View");
-		menu.add(new JCheckBoxMenuItem(LolcatAction.getInstance()));
-		menu.add(new JCheckBoxMenuItem(VisualizeReferencesAction.getInstance()));
+		menu.add(new JCheckBoxMenuItem(new LolcatAction(diagramPanel)));
+		menu.add(new JCheckBoxMenuItem(new VisualizeReferencesAction(diagramPanel)));
 		return menu;
 	}
 
-	private JMenu buildHelpMenu() {
+	private JMenu buildHelpMenu(DiagramPanel diagramPanel) {
 		JMenu menu = new JMenu("Help");
-		menu.add(InstructionsAction.getInstance());
-		menu.add(MappingAlgorithmHelpAction.getInstance());
-		menu.add(LoadSampleModelAction.getInstance());
-		menu.add(AboutAction.getInstance());
+		menu.add(new InstructionsAction(diagramPanel));
+		menu.add(new MappingAlgorithmHelpAction(diagramPanel));
+		menu.add(new LoadSampleModelAction(diagramPanel));
 		return menu;
 	}
 }

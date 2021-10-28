@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.Setter;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.view.DiagramPanel;
 
@@ -19,22 +18,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.prefs.Preferences;
 
-public class LoadAction extends AbstractAction {
+public class LoadAction extends DiagramPanelAction {
 	private static final String LAST_LOAD_LOCATION_KEY = "lastLoadLocation";
 
-	private static LoadAction instance;
-	public static LoadAction getInstance() {
-		if (instance == null) {
-			instance = new LoadAction();
-		}
-		return instance;
-	}
-
-	@Setter
-	private DiagramPanel diagramPanel;
-
-	public LoadAction() {
-		super("Load");
+	public LoadAction(DiagramPanel diagramPanel) {
+		super("Load", diagramPanel);
 		this.putValue(SHORT_DESCRIPTION, "Load a saved diagram.");
 		this.putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 	}
@@ -52,7 +40,7 @@ public class LoadAction extends AbstractAction {
 		if (path != null) {
 			fileChooser.setSelectedFile(new File(path));
 		}
-		int choice = fileChooser.showOpenDialog(this.diagramPanel);
+		int choice = fileChooser.showOpenDialog(getDiagramPanel());
 		if (choice == JFileChooser.APPROVE_OPTION) {
 			File chosenFile = fileChooser.getSelectedFile();
 			if (chosenFile == null || chosenFile.isDirectory() || !chosenFile.exists() || !chosenFile.canRead()) {
@@ -65,7 +53,7 @@ public class LoadAction extends AbstractAction {
 						.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true)
 						.build();
 				JsonNode data = mapper.readValue(fis, JsonNode.class);
-				this.diagramPanel.setModel(MappingModel.fromJson((ObjectNode) data));
+				getDiagramPanel().setModel(MappingModel.fromJson((ObjectNode) data));
 				prefs.put(LAST_LOAD_LOCATION_KEY, chosenFile.getAbsolutePath());
 			} catch (Exception ex) {
 				ex.printStackTrace();

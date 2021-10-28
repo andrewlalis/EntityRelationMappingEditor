@@ -1,7 +1,6 @@
 package nl.andrewlalis.erme.control.actions.edits;
 
-import lombok.Setter;
-import nl.andrewlalis.erme.control.actions.LocalAction;
+import nl.andrewlalis.erme.control.actions.DiagramPanelAction;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
@@ -12,57 +11,45 @@ import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-public class AddRelationAction extends LocalAction {
-	private static AddRelationAction instance;
-	public static AddRelationAction getInstance() {
-		if (instance == null) {
-			instance = new AddRelationAction();
-		}
-		return instance;
-	}
-
-	@Setter
-	private MappingModel model;
-
-	@Setter
-	private DiagramPanel diagramPanel;
-
-	public AddRelationAction() {
-		super("Add Relation");
+public class AddRelationAction extends DiagramPanelAction {
+	public AddRelationAction(DiagramPanel diagramPanel) {
+		super("Add Relation", diagramPanel);
 		this.putValue(SHORT_DESCRIPTION, "Add a new relation to the diagram.");
 		this.putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		DiagramPanel dp = getDiagramPanel();
+		MappingModel model = dp.getModel();
 		String name = JOptionPane.showInputDialog(
-				this.diagramPanel,
+				dp,
 				"Enter the name of the relation.",
 				"Add Relation",
 				JOptionPane.PLAIN_MESSAGE
 		);
 		if (name != null) {
-			final boolean isFirstRelation = this.model.getRelations().isEmpty();
+			final boolean isFirstRelation = model.getRelations().isEmpty();
 			Point p;
-			if (this.hasLocation()) {
+			if (model.getLastInteractionPoint() != null) {
 				p = new Point(
-						this.getLocation().x - this.diagramPanel.getPanningTranslation().x,
-						this.getLocation().y - this.diagramPanel.getPanningTranslation().y
+						model.getLastInteractionPoint().x - dp.getPanningTranslation().x,
+						model.getLastInteractionPoint().y - dp.getPanningTranslation().y
 				);
 			} else if (isFirstRelation) {
 				p = new Point(100, 100);
 			} else {
-				Rectangle bounds = this.model.getRelationBounds();
+				Rectangle bounds = model.getRelationBounds();
 				p = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
 			}
-			Relation r = new Relation(this.model, p, name);
-			this.model.getSelectedRelations().forEach(rl -> rl.setSelected(false));
+			Relation r = new Relation(model, p, name);
+			model.getSelectedRelations().forEach(rl -> rl.setSelected(false));
 			r.setSelected(true);
-			this.model.addRelation(r);
+			model.addRelation(r);
 			if (isFirstRelation) {
-				this.model.normalizeRelationPositions();
-				this.diagramPanel.centerModel();
-				this.diagramPanel.repaint();
+				model.normalizeRelationPositions();
+				dp.centerModel();
+				dp.repaint();
 			}
 		}
 	}

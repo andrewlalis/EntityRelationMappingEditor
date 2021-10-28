@@ -1,13 +1,11 @@
 package nl.andrewlalis.erme.view.view_models;
 
-import nl.andrewlalis.erme.control.actions.VisualizeReferencesAction;
 import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.ForeignKeyAttribute;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.util.Random;
 
 /**
@@ -22,9 +20,7 @@ public class MappingModelViewModel implements ViewModel {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (VisualizeReferencesAction.getInstance().isReferenceVisualizationEnabled()) {
-			visualizeReferences(g);
-		}
+		if (model.isReferenceVisualizationEnabled()) visualizeReferences(g);
 		for (Relation r : this.model.getRelations()) {
 			r.getViewModel().draw(g);
 		}
