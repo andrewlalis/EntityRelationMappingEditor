@@ -35,7 +35,7 @@ public class AutoPositionAction extends DiagramPanelAction {
 			);
 			return;
 		}
-		String[] choices = new String[]{"Alphabeticaly", "Custom Order"};
+		String[] choices = new String[]{"Alphabetically", "Custom Order"};
 		String choice = (String) JOptionPane.showInputDialog(
 				getDiagramPanel(),
 				"Select how to sort the relations",
