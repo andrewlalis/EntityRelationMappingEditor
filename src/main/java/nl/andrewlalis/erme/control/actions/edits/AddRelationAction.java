@@ -43,9 +43,9 @@ public class AddRelationAction extends DiagramPanelAction {
 				p = new Point(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
 			}
 			Relation r = new Relation(model, p, name);
-			model.getSelectedRelations().forEach(rl -> rl.setSelected(false));
-			r.setSelected(true);
 			model.addRelation(r);
+			model.getSelectionModel().clearSelection();
+			model.getSelectionModel().select(r);
 			if (isFirstRelation) {
 				model.normalizeRelationPositions();
 				dp.centerModel();

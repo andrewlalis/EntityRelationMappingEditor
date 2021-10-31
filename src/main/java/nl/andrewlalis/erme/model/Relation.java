@@ -20,7 +20,6 @@ public class Relation implements Viewable, Comparable<Relation> {
 	private String name;
 	private final List<Attribute> attributes;
 
-	private transient boolean selected;
 	private transient RelationViewModel viewModel;
 
 	public Relation(MappingModel model, Point position, String name, List<Attribute> attributes) {
@@ -42,10 +41,6 @@ public class Relation implements Viewable, Comparable<Relation> {
 		this.name = name;
 	}
 
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
-
 	public void addAttribute(Attribute attribute) {
 		this.attributes.add(attribute);
 		this.model.fireChangedEvent();
@@ -61,6 +56,10 @@ public class Relation implements Viewable, Comparable<Relation> {
 			this.model.removeAllReferencingAttributes(attribute);
 			this.model.fireChangedEvent();
 		}
+	}
+
+	public boolean isSelected() {
+		return this.model.getSelectionModel().isSelected(this);
 	}
 
 	@Override

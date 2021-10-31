@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 public class RemoveRelationAction extends DiagramPanelAction {
 	public RemoveRelationAction(DiagramPanel diagramPanel) {
@@ -20,7 +21,8 @@ public class RemoveRelationAction extends DiagramPanelAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		MappingModel model = getDiagramPanel().getModel();
-		if (model.getSelectedRelations().isEmpty()) {
+		List<Relation> selectedRelations = model.getSelectionModel().getSelectedRelations();
+		if (selectedRelations.isEmpty()) {
 			JOptionPane.showMessageDialog(
 					getDiagramPanel(),
 					"No relations selected. Select at least one relation to remove.",
@@ -29,8 +31,12 @@ public class RemoveRelationAction extends DiagramPanelAction {
 			);
 			return;
 		}
-		for (Relation r : model.getSelectedRelations()) {
-			model.removeRelation(r);
+		int choice = JOptionPane.showConfirmDialog(getDiagramPanel(), "Are you sure you want to remove these relations?", "Confirm", JOptionPane.YES_NO_OPTION);
+		if (choice == JOptionPane.YES_OPTION) {
+			for (Relation r : selectedRelations) {
+				model.removeRelation(r);
+			}
+			model.getSelectionModel().clearRelations();
 		}
 	}
 }

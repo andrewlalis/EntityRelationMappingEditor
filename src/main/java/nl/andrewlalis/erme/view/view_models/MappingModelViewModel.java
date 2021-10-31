@@ -1,7 +1,6 @@
 package nl.andrewlalis.erme.view.view_models;
 
 import nl.andrewlalis.erme.model.Attribute;
-import nl.andrewlalis.erme.model.ForeignKeyAttribute;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 
@@ -32,13 +31,12 @@ public class MappingModelViewModel implements ViewModel {
 		g2.setStroke(dashedStroke);
 		for (Relation r : this.model.getRelations()) {
 			for (Attribute a : r.getAttributes()) {
-				if (a instanceof ForeignKeyAttribute) {
-					ForeignKeyAttribute fk = (ForeignKeyAttribute) a;
+				if (a.hasReference()) {
 					// Generate a random HSB color for the line, seeded using the referenced attribute's hash code.
-					Random random = new Random(fk.getReference().hashCode());
+					Random random = new Random(a.getReference().hashCode());
 					g2.setColor(Color.getHSBColor(random.nextFloat(), 1.0f, 0.8f));
-					Rectangle sourceBounds = fk.getViewModel().getBounds(g);
-					Rectangle targetBounds = fk.getReference().getViewModel().getBounds(g);
+					Rectangle sourceBounds = a.getViewModel().getBounds(g);
+					Rectangle targetBounds = a.getReference().getViewModel().getBounds(g);
 					Point sourcePoint = new Point(sourceBounds.x + sourceBounds.width / 2, sourceBounds.y + 3 * targetBounds.height / 4);
 					Point targetPoint = new Point(targetBounds.x + targetBounds.width / 2, targetBounds.y + 3 * targetBounds.height / 4);
 					g2.drawLine(sourcePoint.x, sourcePoint.y, targetPoint.x, targetPoint.y);

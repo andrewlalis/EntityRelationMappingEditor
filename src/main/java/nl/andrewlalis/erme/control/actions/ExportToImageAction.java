@@ -124,10 +124,10 @@ public class ExportToImageAction extends DiagramPanelAction {
 		// Render the model.
 		boolean lolcat = model.isLolcatEnabled(); // save previous lolcat mode
 		model.setLolcatEnabled(false);
-		List<Relation> selectedRelations = model.getSelectedRelations();
-		model.getSelectedRelations().forEach(r -> r.setSelected(false));
+		List<Relation> selectedRelations = model.getSelectionModel().getSelectedRelations();
+		model.getSelectionModel().clearSelection();
 		new MappingModelViewModel(model).draw(g2d);
-		model.getRelations().forEach(r -> r.setSelected(selectedRelations.contains(r)));
+		model.getSelectionModel().selectAll(selectedRelations);
 		model.setLolcatEnabled(lolcat); // revert previous lolcat mode
 
 		// Revert to the normal image space, and render a watermark.

@@ -13,6 +13,7 @@ public class Attribute {
 	private final Relation relation;
 	private AttributeType type;
 	private String name;
+	private Attribute reference;
 
 	private transient AttributeViewModel viewModel;
 
@@ -20,6 +21,7 @@ public class Attribute {
 		this.relation = relation;
 		this.type = type;
 		this.name = name;
+		this.reference = null;
 	}
 
 	public void setType(AttributeType type) {
@@ -31,12 +33,24 @@ public class Attribute {
 		this.name = name;
 		this.relation.getModel().fireChangedEvent();
 	}
+
+	public boolean hasReference() {
+		return this.reference != null;
+	}
+
+	public void setReference(Attribute attribute) {
+		this.reference = attribute;
+	}
 	
 	public AttributeViewModel getViewModel() {
 		if (this.viewModel == null) {
 			this.viewModel = new AttributeViewModel(this);
 		}
 		return this.viewModel;
+	}
+
+	public boolean isSelected() {
+		return this.relation.getModel().getSelectionModel().isSelected(this);
 	}
 
 	@Override

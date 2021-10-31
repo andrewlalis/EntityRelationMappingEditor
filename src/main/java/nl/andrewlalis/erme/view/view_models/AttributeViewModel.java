@@ -2,7 +2,6 @@ package nl.andrewlalis.erme.view.view_models;
 
 import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.AttributeType;
-import nl.andrewlalis.erme.model.ForeignKeyAttribute;
 
 import java.awt.*;
 import java.awt.font.TextAttribute;
@@ -16,6 +15,7 @@ public class AttributeViewModel implements ViewModel {
 	public static final int PADDING_X = 5;
 	public static final int PADDING_Y = 5;
 	public static final Color BACKGROUND_COLOR = new Color(192, 192, 192, 127);
+	public static final Color SELECTED_COLOR = new Color(148, 255, 176, 127);
 	public static final Color FONT_COLOR = Color.BLACK;
 	public static final float FK_FONT_SIZE = 11.0f;
 	private static final float LOLCAT_SAT = 0.75f;
@@ -35,16 +35,16 @@ public class AttributeViewModel implements ViewModel {
 		g.setColor(FONT_COLOR);
 		g.drawRect(r.x, r.y, r.width, r.height);
 		g.drawString(as.getIterator(), r.x + PADDING_X, r.y + (r.height - PADDING_Y));
-		if (this.attribute instanceof ForeignKeyAttribute) {
-			ForeignKeyAttribute fkAttribute = (ForeignKeyAttribute) this.attribute;
+		if (this.attribute.hasReference() && !this.attribute.getRelation().getModel().isReferenceVisualizationEnabled()) {
 			Font originalFont = g.getFont();
 			g.setFont(g.getFont().deriveFont(Font.ITALIC, FK_FONT_SIZE));
-			g.drawString(fkAttribute.getFullReferenceName(), r.x + PADDING_X, r.y - PADDING_Y);
+			g.drawString(getFullReferenceName(), r.x + PADDING_X, r.y - PADDING_Y);
 			g.setFont(originalFont);
 		}
 	}
 
 	private Color getBackgroundColor(int x, int y, Graphics2D g) {
+		if (attribute.isSelected()) return SELECTED_COLOR;
 		if (!attribute.getRelation().getModel().isLolcatEnabled()) return BACKGROUND_COLOR;
 		Point offset = g.getClipBounds().getLocation();
 		g.translate(offset.x, offset.y);
@@ -82,11 +82,10 @@ public class AttributeViewModel implements ViewModel {
 		Rectangle2D nameRect = g.getFontMetrics().getStringBounds(as.getIterator(), 0, this.attribute.getName().length(), g);
 		int width = (int) nameRect.getWidth() + (2 * PADDING_X);
 		int height = (int) nameRect.getHeight() + (2 * PADDING_Y);
-		if (this.attribute instanceof ForeignKeyAttribute) {
-			ForeignKeyAttribute fkAttribute = (ForeignKeyAttribute) this.attribute;
+		if (this.attribute.hasReference()) {
 			Font originalFont = g.getFont();
 			g.setFont(g.getFont().deriveFont(Font.ITALIC, FK_FONT_SIZE));
-			Rectangle referenceNameBounds = g.getFontMetrics().getStringBounds(fkAttribute.getFullReferenceName(), g).getBounds();
+			Rectangle referenceNameBounds = g.getFontMetrics().getStringBounds(getFullReferenceName(), g).getBounds();
 			g.setFont(originalFont);
 			width = Math.max(width, referenceNameBounds.width + (2 * PADDING_X));
 		}
@@ -102,5 +101,10 @@ public class AttributeViewModel implements ViewModel {
 			as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_LOW_DASHED);
 		}
 		return as;
+	}
+
+	private String getFullReferenceName() {
+		if (!this.attribute.hasReference()) return "";
+		return this.attribute.getReference().getRelation().getName() + "." + this.attribute.getReference().getName();
 	}
 }

@@ -1,5 +1,6 @@
 package nl.andrewlalis.erme.control.diagram;
 
+import nl.andrewlalis.erme.model.Attribute;
 import nl.andrewlalis.erme.model.MappingModel;
 import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
@@ -25,7 +26,7 @@ public class DiagramMouseListener extends MouseAdapter {
 	 * - If the click occurs within at least one relation, select the first one,
 	 * and deselect all others if CTRL is not held down.
 	 * - If the user did a right-click, try to open a popup menu with some
-	 * possible actions.
+	 * possible actions, based on what entity we're over.
 	 * @param e The mouse event.
 	 */
 	@Override
@@ -40,15 +41,24 @@ public class DiagramMouseListener extends MouseAdapter {
 		final boolean isShiftDown = (e.getModifiers() & ActionEvent.SHIFT_MASK) == ActionEvent.SHIFT_MASK;
 		MappingModel model = this.diagramPanel.getModel();
 
-		if (!isShiftDown && !isCtrlDown) {// A simple click anywhere should reset selection.
-			model.getRelations().forEach(r -> r.setSelected(false));
+		if (!isShiftDown && !isCtrlDown) {// A simple left-click anywhere should reset selection.
+			model.getSelectionModel().clearSelection();
 		}
 
 		if (!isShiftDown) {// If the user clicked or CTRL+clicked, try and select the relation they clicked on.
 			for (Relation r : model.getRelations()) {
 				if (r.getViewModel().getBounds(g).contains(modelX, modelY)) {
-					r.setSelected(!r.isSelected());
-					break;
+					boolean anyAttributeSelected = false;
+					for (Attribute a : r.getAttributes()) {
+						if (a.getViewModel().getBounds(g).contains(modelX, modelY)) {
+							model.getSelectionModel().toggle(a);
+						}
+						anyAttributeSelected = anyAttributeSelected || a.isSelected();
+					}
+					if (!anyAttributeSelected) {
+						model.getSelectionModel().toggle(r);
+						break;
+					}
 				}
 			}
 		}
@@ -77,12 +87,11 @@ public class DiagramMouseListener extends MouseAdapter {
 		MappingModel model = this.diagramPanel.getModel();
 
 		if (isShiftDown) {
-			System.out.println(e);
 			this.diagramPanel.translate(-dx, -dy);
 			this.diagramPanel.repaint();
 		} else {
 			for (Relation r : model.getRelations()) {
-				if (r.isSelected()) {
+				if (model.getSelectionModel().isSelected(r)) {
 					r.setPosition(new Point(r.getPosition().x - dx, r.getPosition().y - dy));
 					changed = true;
 				}

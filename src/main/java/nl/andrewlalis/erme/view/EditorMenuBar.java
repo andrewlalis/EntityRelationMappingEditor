@@ -3,6 +3,7 @@ package nl.andrewlalis.erme.view;
 import nl.andrewlalis.erme.control.actions.*;
 import nl.andrewlalis.erme.control.actions.edits.AddAttributeAction;
 import nl.andrewlalis.erme.control.actions.edits.AddRelationAction;
+import nl.andrewlalis.erme.control.actions.edits.RemoveAttributeAction;
 import nl.andrewlalis.erme.control.actions.edits.RemoveRelationAction;
 
 import javax.swing.*;
@@ -35,7 +36,7 @@ public class EditorMenuBar extends JMenuBar {
 		menu.add(new AddRelationAction(diagramPanel));
 		menu.add(new RemoveRelationAction(diagramPanel));
 		menu.add(new AddAttributeAction(diagramPanel));
-		menu.add(new RemoveRelationAction(diagramPanel));
+		menu.add(new RemoveAttributeAction(diagramPanel));
 		menu.add(new AutoPositionAction(diagramPanel));
 		return menu;
 	}

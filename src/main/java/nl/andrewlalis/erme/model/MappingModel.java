@@ -10,9 +10,7 @@ import nl.andrewlalis.erme.view.view_models.MappingModelViewModel;
 import nl.andrewlalis.erme.view.view_models.ViewModel;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This model contains all the information about a single mapping diagram,
@@ -33,10 +31,13 @@ public class MappingModel implements Viewable {
 	@Getter
 	@Setter
 	private transient boolean referenceVisualizationEnabled = false;
+	@Getter
+	private transient final SelectionModel selectionModel;
 
 	public MappingModel() {
 		this.relations = new HashSet<>();
 		this.changeListeners = new HashSet<>();
+		this.selectionModel = new SelectionModel(this);
 	}
 
 	public void addRelation(Relation r) {
@@ -49,14 +50,6 @@ public class MappingModel implements Viewable {
 		if (this.relations.remove(r)) {
 			this.fireChangedEvent();
 		}
-	}
-
-	/**
-	 * Gets the list of relations which are currently selected.
-	 * @return The list of relations which are selected.
-	 */
-	public List<Relation> getSelectedRelations() {
-		return this.relations.stream().filter(Relation::isSelected).collect(Collectors.toList());
 	}
 
 	/**
@@ -86,11 +79,8 @@ public class MappingModel implements Viewable {
 		for (Relation r : this.getRelations()) {
 			Set<Attribute> removalSet = new HashSet<>();
 			for (Attribute a : r.getAttributes()) {
-				if (a instanceof ForeignKeyAttribute) {
-					ForeignKeyAttribute fkA = (ForeignKeyAttribute) a;
-					if (fkA.getReference().equals(referenced)) {
-						removalSet.add(fkA);
-					}
+				if (a.hasReference() && a.getReference().equals(referenced)) {
+					removalSet.add(a);
 				}
 			}
 			removalSet.forEach(r::removeAttribute);
@@ -196,12 +186,11 @@ public class MappingModel implements Viewable {
 				ObjectNode attributeNode = mapper.createObjectNode()
 						.put("name", a.getName())
 						.put("type", a.getType().name());
-				if (a instanceof ForeignKeyAttribute) {
-					ForeignKeyAttribute fk = (ForeignKeyAttribute) a;
+				if (a.hasReference()) {
 					ObjectNode referenceNode = mapper.createObjectNode()
-							.put("relation", fk.getReference().getRelation().getName())
-							.put("attribute", fk.getReference().getName());
-					attributeNode.set("references", referenceNode);
+							.put("relation", a.getReference().getRelation().getName())
+							.put("attribute", a.getReference().getName());
+					attributeNode.set("reference", referenceNode);
 				}
 				attributesArray.add(attributeNode);
 			}
@@ -245,7 +234,8 @@ public class MappingModel implements Viewable {
 				Attribute referencedAttribute = model.findAttribute(referencedRelation, referencedName);
 				if (referencedAttribute == null) throw new IllegalArgumentException("Foreign key referenced unknown attribute.");
 				if (!references.containsKey(referencedAttribute)) {
-					ForeignKeyAttribute fk = new ForeignKeyAttribute(attribute.getRelation(), attribute.getType(), attribute.getName(), referencedAttribute);
+					Attribute fk = new Attribute(attribute.getRelation(), attribute.getType(), attribute.getName());
+					fk.setReference(referencedAttribute);
 					attribute.getRelation().removeAttribute(attribute);
 					attribute.getRelation().addAttribute(fk);
 					references.remove(attribute);
@@ -270,8 +260,8 @@ public class MappingModel implements Viewable {
 		Map<Attribute, ObjectNode> references = new HashMap<>();
 		for (JsonNode r : node.withArray("relations")) {
 			for (JsonNode a : r.withArray("attributes")) {
-				if (a.has("references") && a.get("references").isObject()) {
-					ObjectNode referenceNode = (ObjectNode) a.get("references");
+				if (a.has("reference") && a.get("reference").isObject()) {
+					ObjectNode referenceNode = (ObjectNode) a.get("reference");
 					String attributeName = a.get("name").asText();
 					String relationName = r.get("name").asText();
 					Attribute attribute = model.findAttribute(relationName, attributeName);

@@ -2,7 +2,6 @@ package nl.andrewlalis.erme.control.actions.edits;
 
 import nl.andrewlalis.erme.control.actions.DiagramPanelAction;
 import nl.andrewlalis.erme.model.Attribute;
-import nl.andrewlalis.erme.model.Relation;
 import nl.andrewlalis.erme.view.DiagramPanel;
 
 import javax.swing.*;
@@ -20,28 +19,22 @@ public class RemoveAttributeAction extends DiagramPanelAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		List<Relation> selectedRelations = getDiagramPanel().getModel().getSelectedRelations();
-		if (selectedRelations.size() != 1 || selectedRelations.get(0).getAttributes().isEmpty()) {
+		List<Attribute> selectedAttributes = getDiagramPanel().getModel().getSelectionModel().getSelectedAttributes();
+		if (selectedAttributes.isEmpty()) {
 			JOptionPane.showMessageDialog(
 					getDiagramPanel(),
-					"A single relation with at least one attribute must be selected to remove an attribute.",
-					"Single Relation With Attribute Required",
+					"At least one attribute must be selected to remove.",
+					"Select Attributes to Remove Them",
 					JOptionPane.WARNING_MESSAGE
 			);
 			return;
 		}
-		Relation r = selectedRelations.get(0);
-		Attribute attribute = (Attribute) JOptionPane.showInputDialog(
-				getDiagramPanel(),
-				"Select the attribute to remove.",
-				"Select Attribute",
-				JOptionPane.PLAIN_MESSAGE,
-				null,
-				r.getAttributes().toArray(new Attribute[0]),
-				r.getAttributes().get(0)
-		);
-		if (attribute != null) {
-			r.removeAttribute(attribute);
+		int choice = JOptionPane.showConfirmDialog(getDiagramPanel(), "Are you sure you want to remove these attributes?", "Confirm", JOptionPane.OK_CANCEL_OPTION);
+		if (choice == JOptionPane.YES_OPTION) {
+			for (Attribute a : selectedAttributes) {
+				a.getRelation().removeAttribute(a);
+			}
+			getDiagramPanel().getModel().getSelectionModel().clearAttributes();
 		}
 	}
 }
